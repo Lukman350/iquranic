@@ -4,7 +4,7 @@ import 'package:iquranic/models/ayat.dart';
 import 'package:iquranic/models/surah.dart';
 
 class Api {
-  final String baseUrl = 'https://api.npoint.io/99c279bb173a6e28359c';
+  final String baseUrl = 'https://equran.id/api/v2';
 
   Future<AyatList> getAyat(String surah) async {
     return Future.delayed(const Duration(seconds: 1), () async {
@@ -26,16 +26,16 @@ class Api {
 
   Future<SurahList> getAllSurah() async {
     return Future.delayed(const Duration(seconds: 1), () async {
-      final response = await http.get(Uri.parse('$baseUrl/data'));
+      final response = await http.get(Uri.parse('$baseUrl/surat'));
 
       if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
+        var resp = jsonDecode(response.body);
 
-        if (data.isEmpty) {
+        if (resp.isEmpty) {
           throw Exception('Surat tidak ditemukan');
         }
 
-        return SurahList.fromJson(data);
+        return SurahList.fromJson(resp);
       } else {
         throw Exception('Failed to load surah');
       }
@@ -44,7 +44,7 @@ class Api {
 
   Future<SurahList> searchSurah(String query) async {
     return Future.delayed(const Duration(seconds: 1), () async {
-      final response = await http.get(Uri.parse('$baseUrl/data'));
+      final response = await http.get(Uri.parse('$baseUrl/surat'));
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
@@ -54,9 +54,9 @@ class Api {
         }
 
         final List<Surah> surahList = <Surah>[];
-        for (var surah in data) {
-          if (surah['nama'].toString().toLowerCase().contains(query)) {
-            surahList.add(Surah.fromJson(surah));
+        for (var surah in data.data) {
+          if (surah.nama.toLowerCase().contains(query.toLowerCase())) {
+            surahList.add(surah);
           }
         }
 
@@ -67,7 +67,11 @@ class Api {
           });
         }
 
-        return SurahList(surahList: surahList);
+        return SurahList(
+          code: 200,
+          message: 'Success',
+          data: surahList,
+        );
       } else {
         throw Exception('Failed to load surah');
       }

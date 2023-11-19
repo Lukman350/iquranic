@@ -1,34 +1,133 @@
+class SuratExtra {
+  final int nomor;
+  final String nama;
+  final String namaLatin;
+  final int jumlahAyat;
+
+  SuratExtra(
+      {required this.nomor,
+      required this.nama,
+      required this.namaLatin,
+      required this.jumlahAyat});
+
+  factory SuratExtra.fromJson(Map<String, dynamic> json) {
+    return SuratExtra(
+        nomor: json['nomor'] as int,
+        nama: json['nama'] as String,
+        namaLatin: json['namaLatin'] as String,
+        jumlahAyat: json['jumlahAyat'] as int);
+  }
+}
+
 class Ayat {
-  final String ar;
-  final String id;
-  final String nomor;
-  final String tr;
+  final int nomorAyat;
+  final String teksArab;
+  final String teksLatin;
+  final String teksIndonesia;
+  final Map<String, dynamic> audio;
 
   Ayat(
-      {required this.ar,
-      required this.id,
-      required this.nomor,
-      required this.tr});
+      {required this.nomorAyat,
+      required this.teksArab,
+      required this.teksLatin,
+      required this.teksIndonesia,
+      required this.audio});
 
   factory Ayat.fromJson(Map<String, dynamic> json) {
     return Ayat(
-      ar: json['ar'] as String,
-      id: json['id'] as String,
-      nomor: json['nomor'] as String,
-      tr: json['tr'] as String,
-    );
+        nomorAyat: json['nomorAyat'] as int,
+        teksArab: json['teksArab'] as String,
+        teksLatin: json['teksLatin'] as String,
+        teksIndonesia: json['teksIndonesia'] as String,
+        audio: json['audio'] as Map<String, dynamic>);
+  }
+}
+
+class DataSurat {
+  final int nomor;
+  final String nama;
+  final String namaLatin;
+  final int jumlahAyat;
+  final String tempatTurun;
+  final String arti;
+  final String deskripsi;
+  final Map<String, dynamic> audioFull;
+  final List<Ayat> ayat;
+  final Map suratSelanjutnya;
+  final dynamic suratSebelumnya;
+
+  DataSurat(
+      {required this.nomor,
+      required this.nama,
+      required this.namaLatin,
+      required this.jumlahAyat,
+      required this.tempatTurun,
+      required this.arti,
+      required this.deskripsi,
+      required this.audioFull,
+      required this.ayat,
+      required this.suratSelanjutnya,
+      required this.suratSebelumnya});
+
+  factory DataSurat.fromJson(Map<String, dynamic> json) {
+    final List<Ayat> ayatList = <Ayat>[];
+
+    for (var ayat in json['ayat']) {
+      ayatList.add(Ayat.fromJson(ayat));
+    }
+
+    return DataSurat(
+        nomor: json['nomor'] as int,
+        nama: json['nama'] as String,
+        namaLatin: json['namaLatin'] as String,
+        jumlahAyat: json['jumlahAyat'] as int,
+        tempatTurun: json['tempatTurun'] as String,
+        arti: json['arti'] as String,
+        deskripsi: json['deskripsi'] as String,
+        audioFull: json['audioFull'] as Map<String, dynamic>,
+        ayat: ayatList,
+        suratSelanjutnya: json['suratSelanjutnya'],
+        suratSebelumnya: json['suratSebelumnya']);
   }
 }
 
 class AyatList {
-  final List<Ayat> ayatList;
+  final int code;
+  final String message;
+  final DataSurat data;
 
-  AyatList({required this.ayatList});
+  AyatList({
+    required this.code,
+    required this.message,
+    required this.data,
+  });
 
-  factory AyatList.fromJson(List<dynamic> json) {
-    List<Ayat> ayatList = <Ayat>[];
-    ayatList = json.map((e) => Ayat.fromJson(e)).toList();
+  factory AyatList.fromJson(Map<String, dynamic> json) {
+    DataSurat dataSurat = DataSurat(
+        nomor: 0,
+        nama: '',
+        namaLatin: '',
+        jumlahAyat: 0,
+        tempatTurun: '',
+        arti: '',
+        deskripsi: '',
+        audioFull: {},
+        ayat: [],
+        suratSelanjutnya: {},
+        suratSebelumnya: {});
 
-    return AyatList(ayatList: ayatList);
+    if (json['data'].runtimeType == String) {
+      throw Exception({
+        'message': 'Surat tidak ditemukan',
+        'code': '404',
+      });
+    } else {
+      dataSurat = DataSurat.fromJson(json['data']);
+    }
+
+    return AyatList(
+        code: json['code'] as int,
+        message: json['message'] as String,
+        data: dataSurat);
   }
 }

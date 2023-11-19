@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:hijri/hijri_calendar.dart';
+import 'package:iquranic/components/alert_error.dart';
 import 'package:iquranic/components/appbar_title.dart';
 import 'package:iquranic/api/api.dart';
 import 'package:iquranic/components/surah_card.dart';
@@ -131,7 +133,7 @@ class _MainScreenState extends State<MainScreen> {
                               future: _surahList,
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
-                                  var surah = snapshot.data!.surahList;
+                                  var surah = snapshot.data!.data;
 
                                   if (surah.isEmpty) {
                                     return const Center(
@@ -141,19 +143,14 @@ class _MainScreenState extends State<MainScreen> {
                                   return SurahCard(
                                       surah: surah, isSearching: false);
                                 } else if (snapshot.hasError) {
-                                  return AlertDialog(
-                                    title: const Text('Error'),
-                                    content: Text(snapshot.error.toString()),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        // close the dialog
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text('OK'),
-                                      ),
-                                    ],
-                                  );
+                                  SchedulerBinding.instance
+                                      .addPostFrameCallback((_) => showDialog(
+                                          context: context,
+                                          builder: (_) {
+                                            return AlertError(
+                                                message:
+                                                    snapshot.error.toString());
+                                          }));
                                 }
 
                                 return Center(

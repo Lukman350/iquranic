@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:iquranic/api/api.dart';
+import 'package:iquranic/components/alert_error.dart';
 import 'package:iquranic/components/appbar_title.dart';
 import 'package:iquranic/components/surah_card.dart';
 import 'package:iquranic/models/surah.dart';
@@ -55,7 +57,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           setState(() {
                             futureSurah = Api().searchSurah(value.toString());
                             futureSurah.then((value) {
-                              if (value.surahList.isEmpty) {
+                              if (value.data.isEmpty) {
                                 setState(() {
                                   error?['code'] = 404;
                                   error?['content'] =
@@ -78,7 +80,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         future: futureSurah,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            var surah = snapshot.data!.surahList;
+                            var surah = snapshot.data!.data;
 
                             if (surah.isEmpty) {
                               return AlertDialog(
@@ -99,20 +101,13 @@ class _SearchScreenState extends State<SearchScreen> {
 
                             return SurahCard(surah: surah, isSearching: false);
                           } else if (snapshot.hasError) {
-                            return AlertDialog(
-                              title: const Text('Error'),
-                              icon: const Icon(Icons.error),
-                              iconColor: Colors.red,
-                              content: Text(snapshot.error.toString()),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: const Text('Close'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                )
-                              ],
-                            );
+                            SchedulerBinding.instance
+                                .addPostFrameCallback((_) => showDialog(
+                                    context: context,
+                                    builder: (_) {
+                                      return AlertError(
+                                          message: snapshot.error.toString());
+                                    }));
                           }
 
                           return error != null

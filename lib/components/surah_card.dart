@@ -42,7 +42,7 @@ class SurahCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(data.nama,
+                          Text(data.namaLatin,
                               style: TextStyle(
                                   color: Theme.of(context)
                                       .colorScheme
@@ -50,7 +50,7 @@ class SurahCard extends StatelessWidget {
                                   fontWeight: FontWeight.w500,
                                   fontSize: 20)),
                           Text(
-                              '${data.type.toUpperCase()} • ${data.ayat.toString().toUpperCase()} AYAT',
+                              '${data.tempatTurun.toUpperCase()} • ${data.jumlahAyat.toString().toUpperCase()} AYAT',
                               style: const TextStyle(
                                   color: Colors.black54,
                                   fontWeight: FontWeight.w300,
@@ -60,7 +60,8 @@ class SurahCard extends StatelessWidget {
                     ),
                     Expanded(
                       flex: 1,
-                      child: Text(data.asma,
+                      child: Text(data.nama,
+                          textDirection: TextDirection.rtl,
                           style: TextStyle(
                               color: Theme.of(context)
                                   .colorScheme
@@ -74,12 +75,13 @@ class SurahCard extends StatelessWidget {
               onTap: () {
                 Navigator.pushNamed(context, QuranScreen.routeName,
                     arguments: ScreenArguments(
-                      surah: data.nomor,
-                      name: data.nama,
-                      asal: data.type,
+                      nomor: data.nomor.toString(),
                       arti: data.arti,
-                      ayat: data.ayat,
-                      audioUrl: data.audio,
+                      audioFull: data.audioFull,
+                      jumlahAyat: data.jumlahAyat,
+                      namaLatin: data.namaLatin,
+                      deskripsi: data.deskripsi,
+                      tempatTurun: data.tempatTurun,
                     ));
               },
             );
