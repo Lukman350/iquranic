@@ -278,9 +278,10 @@ class _QuranScreenState extends State<QuranScreen> {
                                                         .colorScheme
                                                         .onSecondaryContainer,
                                                     fontWeight: FontWeight.bold,
-                                                    fontSize: 18)),
+                                                    fontSize: 24)),
                                             Text(data.teksLatin,
                                                 style: TextStyle(
+                                                    fontFamily: 'ArabLatin',
                                                     locale: const Locale(
                                                         'ar', 'AR'),
                                                     color: Theme.of(context)

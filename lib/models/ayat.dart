@@ -43,7 +43,7 @@ class Ayat {
   }
 }
 
-class DataSurat {
+class DataSurat<T, E> {
   final int nomor;
   final String nama;
   final String namaLatin;
@@ -53,8 +53,8 @@ class DataSurat {
   final String deskripsi;
   final Map<String, dynamic> audioFull;
   final List<Ayat> ayat;
-  final Map suratSelanjutnya;
-  final dynamic suratSebelumnya;
+  final T suratSelanjutnya;
+  final E suratSebelumnya;
 
   DataSurat(
       {required this.nomor,

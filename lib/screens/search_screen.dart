@@ -16,7 +16,7 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   late Future<SurahList> futureSurah;
-  Map<String, dynamic>? error;
+  Exception? error;
   static const String _title = 'Cari Surat';
 
   @override
@@ -58,16 +58,13 @@ class _SearchScreenState extends State<SearchScreen> {
                             futureSurah = Api().searchSurah(value.toString());
                             futureSurah.then((value) {
                               if (value.data.isEmpty) {
-                                setState(() {
-                                  error?['code'] = 404;
-                                  error?['content'] =
-                                      'Surat yang anda cari tidak ditemukan';
+                                error = Exception({
+                                  'code': 404,
+                                  'content': 'Surat tidak ditemukan'
                                 });
                               }
                             }).catchError((error) {
-                              setState(() {
-                                this.error = error;
-                              });
+                              this.error = error;
                             });
                           });
                         },
@@ -83,20 +80,13 @@ class _SearchScreenState extends State<SearchScreen> {
                             var surah = snapshot.data!.data;
 
                             if (surah.isEmpty) {
-                              return AlertDialog(
-                                title: const Text('Error'),
-                                icon: const Icon(Icons.error),
-                                iconColor: Colors.red,
-                                content: Text(snapshot.error.toString()),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: const Text('Close'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  )
-                                ],
-                              );
+                              SchedulerBinding.instance
+                                  .addPostFrameCallback((_) => showDialog(
+                                      context: context,
+                                      builder: (_) {
+                                        return AlertError(
+                                            message: snapshot.error.toString());
+                                      }));
                             }
 
                             return SurahCard(surah: surah, isSearching: false);
@@ -110,28 +100,12 @@ class _SearchScreenState extends State<SearchScreen> {
                                     }));
                           }
 
-                          return error != null
-                              ? AlertDialog(
-                                  title: const Text('Error'),
-                                  icon: const Icon(Icons.error),
-                                  iconColor: Colors.red,
-                                  content: Text(error!['content'].toString()),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: const Text('Close'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    )
-                                  ],
-                                )
-                              : Center(
-                                  child: CircularProgressIndicator(
-                                  backgroundColor: Theme.of(context)
-                                      .colorScheme
-                                      .inversePrimary,
-                                  color: Colors.white,
-                                ));
+                          return Center(
+                              child: CircularProgressIndicator(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.inversePrimary,
+                            color: Colors.white,
+                          ));
                         },
                       ),
                     )

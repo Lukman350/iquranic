@@ -44,37 +44,27 @@ class Api {
 
   Future<SurahList> searchSurah(String query) async {
     return Future.delayed(const Duration(seconds: 1), () async {
-      final response = await http.get(Uri.parse('$baseUrl/surat'));
+      final response = await getAllSurah();
 
-      if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
-
-        if (data.isEmpty) {
-          throw Exception('Surat tidak ditemukan');
-        }
-
-        final List<Surah> surahList = <Surah>[];
-        for (var surah in data.data) {
-          if (surah.nama.toLowerCase().contains(query.toLowerCase())) {
-            surahList.add(surah);
-          }
-        }
-
-        if (surahList.isEmpty) {
-          throw Exception({
-            'message': 'Surat tidak ditemukan',
-            'code': '404',
-          });
-        }
-
-        return SurahList(
-          code: 200,
-          message: 'Success',
-          data: surahList,
-        );
-      } else {
-        throw Exception('Failed to load surah');
+      if (response.data.isEmpty) {
+        throw Exception(
+            {'code': 404, 'content': 'Surat yang anda cari tidak ditemukan'});
       }
+
+      final List<Surah> data = <Surah>[];
+
+      for (var surah in response.data) {
+        if (surah.namaLatin.toLowerCase().contains(query.toLowerCase())) {
+          data.add(surah);
+        }
+      }
+
+      if (data.isEmpty) {
+        throw Exception(
+            {'code': 404, 'content': 'Surat yang anda cari tidak ditemukan'});
+      }
+
+      return SurahList(code: 200, message: 'OK', data: data);
     });
   }
 }
