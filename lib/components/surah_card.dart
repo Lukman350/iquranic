@@ -75,13 +75,14 @@ class SurahCard extends StatelessWidget {
               onTap: () {
                 Navigator.pushNamed(context, QuranScreen.routeName,
                     arguments: ScreenArguments(
-                      nomor: data.nomor.toString(),
+                      nomor: data.nomor,
                       arti: data.arti,
                       audioFull: data.audioFull,
                       jumlahAyat: data.jumlahAyat,
                       namaLatin: data.namaLatin,
                       deskripsi: data.deskripsi,
                       tempatTurun: data.tempatTurun,
+                      nama: data.nama,
                     ));
               },
             );

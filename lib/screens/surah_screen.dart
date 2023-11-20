@@ -1,10 +1,13 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:iquranic/api/api.dart';
 import 'package:iquranic/components/appbar_title.dart';
+import 'package:iquranic/components/audio_widget.dart';
+import 'package:iquranic/components/favorite_button.dart';
 import 'package:iquranic/models/ayat.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:iquranic/components/alert_error.dart';
+import 'package:iquranic/models/surah.dart';
 
 class QuranScreen extends StatefulWidget {
   static const routeName = '/surah';
@@ -16,16 +19,13 @@ class QuranScreen extends StatefulWidget {
 }
 
 class _QuranScreenState extends State<QuranScreen> {
-  bool isPlaying = false;
-  Map<int, bool> isPlayingAyat = {};
   late Future<AyatList> futureAyat;
-  final player = AudioPlayer();
+  late Surah _favorite;
+  final AudioPlayer _audioPlayer = AudioPlayer(playerId: 'iquranic');
 
   @override
   void initState() {
     super.initState();
-    isPlaying = false;
-    isPlayingAyat = {};
   }
 
   @override
@@ -33,7 +33,17 @@ class _QuranScreenState extends State<QuranScreen> {
     final args = ModalRoute.of(context)!.settings.arguments as ScreenArguments;
 
     setState(() {
-      futureAyat = Api().getAyat(args.nomor);
+      futureAyat = Api().getAyat(args.nomor.toString());
+      _favorite = Surah(
+        arti: args.arti,
+        audioFull: args.audioFull,
+        deskripsi: args.deskripsi,
+        jumlahAyat: args.jumlahAyat,
+        nama: args.nama,
+        namaLatin: args.namaLatin,
+        nomor: args.nomor,
+        tempatTurun: args.tempatTurun,
+      );
     });
 
     return Scaffold(
@@ -42,9 +52,13 @@ class _QuranScreenState extends State<QuranScreen> {
               icon: const Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () async {
                 Navigator.pop(context);
-                await player.stop();
               },
             ),
+            actions: <Widget>[
+              FavoriteButton(
+                surah: _favorite,
+              ),
+            ],
             backgroundColor: Theme.of(context).colorScheme.primary,
             title: AppBarTitle(title: args.namaLatin)),
         body: SafeArea(
@@ -127,35 +141,8 @@ class _QuranScreenState extends State<QuranScreen> {
                             child: const Text('Deskripsi',
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 18))),
-                        IconButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateColor.resolveWith(
-                                (states) =>
-                                    Theme.of(context).colorScheme.primary),
-                          ),
-                          icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow,
-                              color: Theme.of(context).colorScheme.onPrimary),
-                          onPressed: () async {
-                            setState(() {
-                              isPlaying = !isPlaying;
-                            });
-
-                            if (!isPlaying) {
-                              await player.stop();
-                            } else {
-                              await player
-                                  .play(UrlSource(args.audioFull['02']))
-                                  .catchError((error) =>
-                                      {AlertError(message: error.toString())});
-
-                              player.onPlayerComplete.listen((event) {
-                                setState(() {
-                                  isPlaying = false;
-                                });
-                              });
-                            }
-                          },
-                        ),
+                        AudioWidget(
+                            player: _audioPlayer, url: args.audioFull['01']),
                       ],
                     )
                   ],
@@ -174,11 +161,6 @@ class _QuranScreenState extends State<QuranScreen> {
                           itemCount: ayat.length,
                           itemBuilder: (context, int index) {
                             var data = ayat[index];
-
-                            SchedulerBinding.instance
-                                .addPostFrameCallback((_) => setState(() {
-                                      isPlayingAyat[index] = false;
-                                    }));
 
                             return Column(
                               children: <Widget>[
@@ -202,55 +184,9 @@ class _QuranScreenState extends State<QuranScreen> {
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 18))),
-                                      IconButton(
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateColor.resolveWith(
-                                                  (states) => Theme.of(context)
-                                                      .colorScheme
-                                                      .primary),
-                                        ),
-                                        icon: Icon(
-                                            isPlayingAyat[index] == true
-                                                ? Icons.pause
-                                                : Icons.play_arrow,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onPrimary),
-                                        onPressed: () async {
-                                          setState(() {
-                                            isPlayingAyat[index] =
-                                                !isPlayingAyat[index]!;
-                                          });
-
-                                          if (isPlayingAyat[index] == false) {
-                                            await player.stop();
-                                          } else {
-                                            await player
-                                                .play(
-                                                    UrlSource(data.audio['01']))
-                                                .catchError((error) => {
-                                                      SchedulerBinding.instance
-                                                          .addPostFrameCallback(
-                                                              (_) => showDialog(
-                                                                  context:
-                                                                      context,
-                                                                  builder: (_) {
-                                                                    return AlertError(
-                                                                        message:
-                                                                            error.toString());
-                                                                  }))
-                                                    });
-
-                                            player.onPlayerComplete
-                                                .listen((event) {
-                                              setState(() {
-                                                isPlayingAyat[index] = false;
-                                              });
-                                            });
-                                          }
-                                        },
-                                      ),
+                                      AudioWidget(
+                                          player: _audioPlayer,
+                                          url: data.audio['01'])
                                     ],
                                   ),
                                 )),
@@ -329,20 +265,22 @@ class _QuranScreenState extends State<QuranScreen> {
 }
 
 class ScreenArguments {
-  final String nomor;
+  final int nomor;
+  final String nama;
   final String namaLatin;
+  final int jumlahAyat;
   final String tempatTurun;
   final String arti;
-  final int jumlahAyat;
   final String deskripsi;
   final Map<String, dynamic> audioFull;
 
   ScreenArguments(
       {required this.nomor,
+      required this.nama,
       required this.namaLatin,
+      required this.jumlahAyat,
       required this.tempatTurun,
       required this.arti,
-      required this.jumlahAyat,
       required this.deskripsi,
       required this.audioFull});
 }

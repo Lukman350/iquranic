@@ -75,7 +75,7 @@ class _MainScreenState extends State<MainScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                            'Mencari Qur\'an \nlebih mudah dengan\n$_title',
+                            'Assalamu\'alaikum',
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.onBackground,
                               fontSize: 15,
@@ -85,7 +85,7 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            '${_now.hour > 10 ? '${_now.hour}' : '0${_now.hour}'}:${_now.minute > 10 ? '${_now.minute}' : '0${_now.minute}'}',
+                            '${_now.hour >= 10 ? '${_now.hour}' : '0${_now.hour}'}:${_now.minute >= 10 ? '${_now.minute}' : '0${_now.minute}'}',
                             style: TextStyle(
                                 color:
                                     Theme.of(context).colorScheme.onBackground,
