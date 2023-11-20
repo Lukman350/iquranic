@@ -18,6 +18,7 @@ class _AudioWidgetState extends State<AudioWidget> {
   PlayerState _playerState = PlayerState.stopped;
   late Source _currentSource;
   StreamSubscription? _audioStateSubscription;
+  bool _isDisabled = false;
 
   @override
   void initState() {
@@ -28,8 +29,11 @@ class _AudioWidgetState extends State<AudioWidget> {
       _audioStateSubscription = widget.player.onPlayerComplete.listen((event) {
         setState(() {
           _playerState = PlayerState.stopped;
+          _isDisabled = false;
         });
       });
+
+      _isDisabled = false;
     });
   }
 
@@ -62,6 +66,7 @@ class _AudioWidgetState extends State<AudioWidget> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
+          disabledColor: Theme.of(context).colorScheme.secondary,
           icon: Icon(
             Icons.play_arrow,
             size: 32,
@@ -69,21 +74,24 @@ class _AudioWidgetState extends State<AudioWidget> {
                 ? Theme.of(context).colorScheme.primary
                 : Theme.of(context).colorScheme.secondary,
           ),
-          onPressed: () async {
-            try {
-              setState(() {
-                _playerState = PlayerState.playing;
-                _currentSource = UrlSource(widget.url);
-              });
-              if (_playerState == PlayerState.playing) {
-                await _play(_currentSource);
-              } else {
-                await _resume();
-              }
-            } catch (e) {
-              AlertError(message: e.toString());
-            }
-          },
+          onPressed: _isDisabled
+              ? null
+              : () async {
+                  try {
+                    setState(() {
+                      _playerState = PlayerState.playing;
+                      _currentSource = UrlSource(widget.url);
+                      _isDisabled = true;
+                    });
+                    if (_playerState == PlayerState.playing) {
+                      await _play(_currentSource);
+                    } else {
+                      await _resume();
+                    }
+                  } catch (e) {
+                    AlertError(message: e.toString());
+                  }
+                },
         ),
         IconButton(
           icon: Icon(
@@ -96,6 +104,7 @@ class _AudioWidgetState extends State<AudioWidget> {
           onPressed: () async {
             await _pause();
             setState(() {
+              _isDisabled = false;
               _playerState = PlayerState.paused;
             });
           },
@@ -111,6 +120,7 @@ class _AudioWidgetState extends State<AudioWidget> {
           onPressed: () async {
             await _stop();
             setState(() {
+              _isDisabled = false;
               _playerState = PlayerState.stopped;
             });
           },

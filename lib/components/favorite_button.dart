@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:iquranic/screens/favorite_screen.dart';
 import 'package:iquranic/storage/favorite_storage.dart';
 import 'package:iquranic/models/surah.dart';
 
@@ -73,11 +74,6 @@ class _FavoriteButtonState extends State<FavoriteButton> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      style: ButtonStyle(
-        backgroundColor: isFavorite
-            ? MaterialStateProperty.all(Colors.white)
-            : MaterialStateProperty.all(Colors.transparent),
-      ),
       icon: Icon(
         isFavorite ? Icons.favorite : Icons.favorite_border,
         color: isFavorite ? Colors.red : Colors.white,
@@ -89,7 +85,23 @@ class _FavoriteButtonState extends State<FavoriteButton> {
           await _addToFavorite(widget.surah);
         }
 
-        Navigator.pushNamed(context, '/favorite');
+        final snackBar = SnackBar(
+            content: Text(isFavorite
+                ? 'Surah ${widget.surah.namaLatin} telah ditambahkan ke daftar favorit'
+                : 'Surah ${widget.surah.namaLatin} telah dihapus dari daftar favorit'),
+            duration: const Duration(seconds: 3),
+            action: SnackBarAction(
+              label: 'Lihat',
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return const FavoriteScreen();
+                }));
+              },
+            ));
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
       },
     );
   }

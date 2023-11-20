@@ -73,17 +73,23 @@ class SurahCard extends StatelessWidget {
                 ),
               )),
               onTap: () {
-                Navigator.pushNamed(context, QuranScreen.routeName,
-                    arguments: ScreenArguments(
-                      nomor: data.nomor,
-                      arti: data.arti,
-                      audioFull: data.audioFull,
-                      jumlahAyat: data.jumlahAyat,
-                      namaLatin: data.namaLatin,
-                      deskripsi: data.deskripsi,
-                      tempatTurun: data.tempatTurun,
-                      nama: data.nama,
-                    ));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) {
+                          return const QuranScreen();
+                        },
+                        settings: RouteSettings(
+                            arguments: ScreenArguments(
+                          nomor: data.nomor,
+                          nama: data.nama,
+                          namaLatin: data.namaLatin,
+                          arti: data.arti,
+                          jumlahAyat: data.jumlahAyat,
+                          tempatTurun: data.tempatTurun,
+                          audioFull: data.audioFull,
+                          deskripsi: data.deskripsi,
+                        ))));
               },
             );
           },

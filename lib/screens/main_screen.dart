@@ -5,6 +5,7 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:iquranic/components/alert_error.dart';
 import 'package:iquranic/components/appbar_title.dart';
 import 'package:iquranic/api/api.dart';
+import 'package:iquranic/components/bottom_nav.dart';
 import 'package:iquranic/components/surah_card.dart';
 import 'package:iquranic/models/surah.dart';
 
@@ -48,18 +49,9 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const AppBarTitle(title: _title),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.search,
-                size: 32, color: Theme.of(context).colorScheme.onPrimary),
-            onPressed: () {
-              Navigator.pushNamed(context, '/search');
-            },
-          ),
-        ],
-      ),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          title: const AppBarTitle(title: _title),
+          automaticallyImplyLeading: false),
       body: SafeArea(
           child: Padding(
               padding:
@@ -75,7 +67,7 @@ class _MainScreenState extends State<MainScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                            'Assalamu\'alaikum',
+                            'Assalamu\'alaikum\nSelamat Datang',
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.onBackground,
                               fontSize: 15,
@@ -167,6 +159,9 @@ class _MainScreenState extends State<MainScreen> {
                       ))
                 ],
               ))),
+      bottomNavigationBar: const BottomNavWidget(
+        currentIndex: 0,
+      ),
     );
   }
 }

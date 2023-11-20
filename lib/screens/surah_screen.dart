@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:iquranic/api/api.dart';
 import 'package:iquranic/components/appbar_title.dart';
 import 'package:iquranic/components/audio_widget.dart';
+import 'package:iquranic/components/bottom_nav.dart';
 import 'package:iquranic/components/favorite_button.dart';
 import 'package:iquranic/models/ayat.dart';
 import 'package:iquranic/components/alert_error.dart';
@@ -22,11 +23,6 @@ class _QuranScreenState extends State<QuranScreen> {
   late Future<AyatList> futureAyat;
   late Surah _favorite;
   final AudioPlayer _audioPlayer = AudioPlayer(playerId: 'iquranic');
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +56,8 @@ class _QuranScreenState extends State<QuranScreen> {
               ),
             ],
             backgroundColor: Theme.of(context).colorScheme.primary,
-            title: AppBarTitle(title: args.namaLatin)),
+            title: AppBarTitle(title: args.namaLatin),
+            automaticallyImplyLeading: false),
         body: SafeArea(
             child: Padding(
           padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
@@ -260,7 +257,10 @@ class _QuranScreenState extends State<QuranScreen> {
                   )),
             ],
           ),
-        )));
+        )),
+        bottomNavigationBar: const BottomNavWidget(
+          currentIndex: 1,
+        ));
   }
 }
 
