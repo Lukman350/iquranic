@@ -23,6 +23,15 @@ class _QuranScreenState extends State<QuranScreen> {
   late Future<AyatList> futureAyat;
   late Surah _favorite;
   final AudioPlayer _audioPlayer = AudioPlayer(playerId: 'iquranic');
+  final TextEditingController _selectAudio = TextEditingController();
+  final Map<String, String> _audioData = {
+    'Abdullah Al Juhany': '01',
+    'Abdul Muhsin Al Qasim': '02',
+    'Abdurrahman as Sudais': '03',
+    'Ibrahim Al Dossari': '04',
+    'Misyari Rasyid Al Afasi': '05',
+  };
+  String _selectedAudio = '01';
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +148,8 @@ class _QuranScreenState extends State<QuranScreen> {
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 18))),
                         AudioWidget(
-                            player: _audioPlayer, url: args.audioFull['01']),
+                            player: _audioPlayer,
+                            url: args.audioFull[_selectedAudio]),
                       ],
                     )
                   ],
@@ -147,7 +157,28 @@ class _QuranScreenState extends State<QuranScreen> {
               ),
               const SizedBox(height: 16),
               Expanded(
-                  flex: 5,
+                flex: 1,
+                child: DropdownMenu<String>(
+                  initialSelection: _audioData.keys.first,
+                  controller: _selectAudio,
+                  label: const Text('Pilih Qori'),
+                  width: MediaQuery.of(context).size.width - 32,
+                  onSelected: (value) {
+                    setState(() {
+                      _selectedAudio = value ?? '01';
+                    });
+                  },
+                  dropdownMenuEntries: _audioData.values.map((value) {
+                    return DropdownMenuEntry<String>(
+                      value: value,
+                      label: _audioData.keys.firstWhere(
+                          (element) => _audioData[element] == value),
+                    );
+                  }).toList(),
+                ),
+              ),
+              Expanded(
+                  flex: 4,
                   child: FutureBuilder<AyatList>(
                     future: futureAyat,
                     builder: (context, snapshot) {
@@ -183,7 +214,7 @@ class _QuranScreenState extends State<QuranScreen> {
                                                   fontSize: 18))),
                                       AudioWidget(
                                           player: _audioPlayer,
-                                          url: data.audio['01'])
+                                          url: data.audio[_selectedAudio]),
                                     ],
                                   ),
                                 )),
@@ -202,31 +233,34 @@ class _QuranScreenState extends State<QuranScreen> {
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: <Widget>[
                                             Text(data.teksArab,
+                                                textAlign: TextAlign.right,
                                                 textDirection:
                                                     TextDirection.rtl,
                                                 style: TextStyle(
+                                                    fontFamily: 'Amiri',
                                                     color: Theme.of(context)
                                                         .colorScheme
                                                         .onSecondaryContainer,
                                                     fontWeight: FontWeight.bold,
-                                                    fontSize: 24)),
+                                                    fontSize: 26)),
+                                            const SizedBox(height: 8),
                                             Text(data.teksLatin,
                                                 style: TextStyle(
-                                                    fontFamily: 'ArabLatin',
-                                                    locale: const Locale(
-                                                        'ar', 'AR'),
+                                                    fontFamily: 'Amiri',
                                                     color: Theme.of(context)
                                                         .colorScheme
                                                         .onSecondaryContainer,
-                                                    fontSize: 16)),
+                                                    fontSize: 18)),
                                             Text(data.teksIndonesia,
                                                 style: TextStyle(
                                                     color: Theme.of(context)
                                                         .colorScheme
                                                         .onSecondaryContainer,
-                                                    fontSize: 12)),
+                                                    fontSize: 14)),
                                           ],
                                         ),
                                       )

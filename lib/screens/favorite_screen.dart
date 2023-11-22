@@ -71,8 +71,18 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                                   isSearching: false,
                                 )
                               : const Center(
-                                  child: Text('Tidak ada surat favorite',
-                                      style: TextStyle(fontSize: 16)));
+                                  child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.favorite_border,
+                                      size: 90,
+                                      color: Colors.grey,
+                                    ),
+                                    Text('Tidak ada surat favorite',
+                                        style: TextStyle(fontSize: 16)),
+                                  ],
+                                ));
                         } else if (snapshot.hasError) {
                           return Text('Error: ${snapshot.error}');
                         } else {

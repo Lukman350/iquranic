@@ -67,7 +67,8 @@ class SurahCard extends StatelessWidget {
                                   .colorScheme
                                   .onSecondaryContainer,
                               fontWeight: FontWeight.w500,
-                              fontSize: 20)),
+                              fontFamily: 'Amiri',
+                              fontSize: 24)),
                     ),
                   ],
                 ),
