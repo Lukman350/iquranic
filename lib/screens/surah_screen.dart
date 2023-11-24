@@ -155,7 +155,6 @@ class _QuranScreenState extends State<QuranScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
               Expanded(
                 flex: 1,
                 child: DropdownMenu<String>(
