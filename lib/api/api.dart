@@ -32,7 +32,7 @@ class Api {
         var resp = jsonDecode(response.body);
 
         if (resp.isEmpty) {
-          throw Exception('Surat tidak ditemukan');
+          throw Exception('Surah tidak ditemukan');
         }
 
         return SurahList.fromJson(resp);
@@ -48,7 +48,7 @@ class Api {
 
       if (response.data.isEmpty) {
         throw Exception(
-            {'code': 404, 'content': 'Surat yang anda cari tidak ditemukan'});
+            {'code': 404, 'content': 'Surah yang anda cari tidak ditemukan'});
       }
 
       final List<Surah> data = <Surah>[];
@@ -61,7 +61,7 @@ class Api {
 
       if (data.isEmpty) {
         throw Exception(
-            {'code': 404, 'content': 'Surat yang anda cari tidak ditemukan'});
+            {'code': 404, 'content': 'Surah yang anda cari tidak ditemukan'});
       }
 
       return SurahList(code: 200, message: 'OK', data: data);

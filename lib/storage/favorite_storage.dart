@@ -1,9 +1,6 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:iquranic/models/surah.dart';
 import 'dart:convert' as convert;
+import 'package:localstorage/localstorage.dart';
 
 class ListSurah {
   final List<Surah> surahList;
@@ -22,48 +19,38 @@ class ListSurah {
 }
 
 class FavoriteStorage {
-  static const String _fileName = 'favorite.json';
+  static const String _fileName = 'iquranic.json';
 
-  static Future<void> _createFileIfNotExists() async {
-    final file = await _localFile;
+  static Future<String> get _localStorage async {
+    final localStorage = LocalStorage(_fileName);
+    await localStorage.ready;
 
-    if (!await File(file).exists()) {
-      await File(file).create();
-    }
+    return localStorage.getItem('favorite') ?? '[]';
   }
 
-  static Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
-  }
-
-  static Future<String> get _localFile async {
-    final path = await _localPath;
-    return '$path/$_fileName';
-  }
-
-  static Future<File> writeFavorite(List<Surah> surahList) async {
-    await _createFileIfNotExists();
-
-    final file = await _localFile;
+  static Future<void> writeFavorite(List<Surah> surahList) async {
     final json =
         convert.jsonEncode(surahList.map((surah) => surah.toJson()).toList());
 
-    return File(file).writeAsString(json);
+    final localStorage = LocalStorage(_fileName);
+    await localStorage.ready;
+
+    await localStorage.setItem('favorite', json);
   }
 
   static Future<List<Surah>> readFavorite() async {
     try {
-      await _createFileIfNotExists();
+      final contents = await _localStorage;
 
-      final file = await _localFile;
-      final contents = await File(file).readAsString();
+      if (contents.isEmpty) {
+        return <Surah>[];
+      }
+
       final json = convert.jsonDecode(contents);
       final result = ListSurah.fromJson(json);
 
       return result.surahList;
     } catch (e) {
-      debugPrint('FavoriteStorage[readFavorite]: $e');
       return <Surah>[];
     }
   }

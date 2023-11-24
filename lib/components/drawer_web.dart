@@ -3,7 +3,6 @@ import 'package:iquranic/components/appbar_title.dart';
 
 class DrawerWeb extends StatelessWidget {
   const DrawerWeb({super.key});
-  final String _title = 'iQuranic';
 
   @override
   Widget build(BuildContext context) {
@@ -15,12 +14,13 @@ class DrawerWeb extends StatelessWidget {
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.primary,
             ),
-            child: AppBarTitle(title: _title),
+            child: const AppBarTitle(title: 'iQuranic'),
           ),
           ListTile(
             title: const Text('Home'),
             onTap: () {
               Navigator.pop(context);
+              Navigator.pushNamed(context, '/');
             },
             leading: const Icon(Icons.home),
           ),

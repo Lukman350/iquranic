@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:iquranic/screens/favorite_screen.dart';
 import 'package:iquranic/storage/favorite_storage.dart';
@@ -44,9 +42,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
 
     existing.add(surah);
 
-    File result = await FavoriteStorage.writeFavorite(existing);
-
-    debugPrint('FavoriteButton[_addToFavorite]: $result');
+    await FavoriteStorage.writeFavorite(existing);
 
     setState(() {
       isFavorite = true;
@@ -62,9 +58,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
 
     existing.removeWhere((element) => element.nomor == surah.nomor);
 
-    File result = await FavoriteStorage.writeFavorite(existing);
-
-    debugPrint('FavoriteButton[_removeFromFavorite]: $result');
+    await FavoriteStorage.writeFavorite(existing);
 
     setState(() {
       isFavorite = false;

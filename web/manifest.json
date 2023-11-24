@@ -5,7 +5,7 @@
     "display": "standalone",
     "background_color": "#FFFFFF",
     "theme_color": "#9543FF",
-    "description": "A new Flutter project.",
+    "description": "A Electronic Quran app that helps you to read, understand, searching and memorize the Quran.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

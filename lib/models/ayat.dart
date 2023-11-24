@@ -86,8 +86,8 @@ class DataSurat<T, E> {
         deskripsi: json['deskripsi'] as String,
         audioFull: json['audioFull'] as Map<String, dynamic>,
         ayat: ayatList,
-        suratSelanjutnya: json['suratSelanjutnya'],
-        suratSebelumnya: json['suratSebelumnya']);
+        suratSelanjutnya: json['SurahSelanjutnya'],
+        suratSebelumnya: json['SurahSebelumnya']);
   }
 }
 
@@ -118,7 +118,7 @@ class AyatList {
 
     if (json['data'].runtimeType == String) {
       throw Exception({
-        'message': 'Surat tidak ditemukan',
+        'message': 'Surah tidak ditemukan',
         'code': '404',
       });
     } else {

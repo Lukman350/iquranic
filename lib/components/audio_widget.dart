@@ -1,7 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:iquranic/components/alert_error.dart';
 
 class AudioWidget extends StatefulWidget {
@@ -15,9 +16,9 @@ class AudioWidget extends StatefulWidget {
 }
 
 class _AudioWidgetState extends State<AudioWidget> {
-  PlayerState _playerState = PlayerState.stopped;
-  late Source _currentSource;
-  StreamSubscription? _audioStateSubscription;
+  ProcessingState _playerState = ProcessingState.idle;
+  String? _currentSource;
+  StreamSubscription? _playerStateSubscription;
   bool _isDisabled = false;
 
   @override
@@ -25,31 +26,86 @@ class _AudioWidgetState extends State<AudioWidget> {
     super.initState();
 
     setState(() {
-      _playerState = PlayerState.stopped;
-      _audioStateSubscription = widget.player.onPlayerComplete.listen((event) {
-        setState(() {
-          _playerState = PlayerState.stopped;
-          _isDisabled = false;
-        });
-      });
+      _playerStateSubscription =
+          widget.player.playerStateStream.listen((state) {
+        if (state.playing) {
+          setState(() {
+            _isDisabled = true;
+          });
+        } else {
+          setState(() {
+            _isDisabled = false;
+          });
+        }
 
-      _isDisabled = false;
+        switch (state.processingState) {
+          case ProcessingState.idle:
+            setState(() {
+              _playerState = ProcessingState.idle;
+            });
+            break;
+          case ProcessingState.loading:
+            setState(() {
+              _playerState = ProcessingState.loading;
+            });
+            break;
+          case ProcessingState.buffering:
+            setState(() {
+              _playerState = ProcessingState.buffering;
+            });
+            break;
+          case ProcessingState.ready:
+            setState(() {
+              _playerState = ProcessingState.ready;
+            });
+            break;
+          case ProcessingState.completed:
+            setState(() {
+              _playerState = ProcessingState.completed;
+              _isDisabled = false;
+            });
+            break;
+          default:
+            setState(() {
+              _playerState = ProcessingState.idle;
+            });
+            break;
+        }
+      });
     });
   }
 
   @override
   void dispose() {
-    _audioStateSubscription?.cancel();
+    _playerStateSubscription?.cancel();
     super.dispose();
   }
 
-  Future<void> _play(Source source) async {
-    await widget.player.play(source, volume: 100);
-    debugPrint('AudioWidget[_playerState]: $_playerState');
+  Future<void> _play(String source) async {
+    if (!kIsWeb) {
+      final audioSource = LockCachingAudioSource(Uri.parse(source), headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': '*',
+      });
+      await widget.player.setAudioSource(audioSource);
+    } else {
+      await widget.player.setUrl(source, headers: {
+        'Accept': '*/*',
+        'Access-Control-Allow-Origin': 'https://equran.nos.wjv-1.neo.id',
+        'Access-Control-Allow-Headers': 'origin, x-requested-with',
+        'Access-Control-Allow-Methods': 'POST,GET,OPTIONS,DELETE',
+        'Origin': 'https://equran.nos.wjv-1.neo.id',
+      });
+    }
+
+    await widget.player.play();
   }
 
   Future<void> _resume() async {
-    await widget.player.resume();
+    Duration? position = widget.player.position;
+    widget.player
+      ..seek(position)
+      ..play();
   }
 
   Future<void> _pause() async {
@@ -70,7 +126,7 @@ class _AudioWidgetState extends State<AudioWidget> {
           icon: Icon(
             Icons.play_arrow,
             size: 32,
-            color: _playerState == PlayerState.playing
+            color: _isDisabled
                 ? Theme.of(context).colorScheme.primary
                 : Theme.of(context).colorScheme.secondary,
           ),
@@ -79,12 +135,11 @@ class _AudioWidgetState extends State<AudioWidget> {
               : () async {
                   try {
                     setState(() {
-                      _playerState = PlayerState.playing;
-                      _currentSource = UrlSource(widget.url);
-                      _isDisabled = true;
+                      _currentSource = widget.url;
                     });
-                    if (_playerState == PlayerState.playing) {
-                      await _play(_currentSource);
+                    if (_playerState == ProcessingState.idle ||
+                        _playerState == ProcessingState.completed) {
+                      await _play(_currentSource!);
                     } else {
                       await _resume();
                     }
@@ -97,32 +152,25 @@ class _AudioWidgetState extends State<AudioWidget> {
           icon: Icon(
             Icons.pause,
             size: 32,
-            color: _playerState == PlayerState.paused
+            color: _playerState == ProcessingState.buffering ||
+                    _playerState == ProcessingState.loading
                 ? Theme.of(context).colorScheme.primary
                 : Theme.of(context).colorScheme.secondary,
           ),
           onPressed: () async {
             await _pause();
-            setState(() {
-              _isDisabled = false;
-              _playerState = PlayerState.paused;
-            });
           },
         ),
         IconButton(
           icon: Icon(
             Icons.stop,
             size: 32,
-            color: _playerState == PlayerState.stopped
+            color: !_isDisabled
                 ? Theme.of(context).colorScheme.primary
                 : Theme.of(context).colorScheme.secondary,
           ),
           onPressed: () async {
             await _stop();
-            setState(() {
-              _isDisabled = false;
-              _playerState = PlayerState.stopped;
-            });
           },
         ),
       ],

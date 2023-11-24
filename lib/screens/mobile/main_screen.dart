@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:iquranic/components/alert_error.dart';
 import 'package:iquranic/components/appbar_title.dart';
+import 'package:iquranic/components/skeleton_mobile.dart';
 import 'package:iquranic/components/surah_card.dart';
 import 'package:iquranic/models/surah.dart';
 import 'package:iquranic/components/bottom_nav.dart';
@@ -86,7 +87,7 @@ class MainScreenMobile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            'Surat Qur\'an',
+                            'Surah Qur\'an',
                             style: TextStyle(
                                 color:
                                     Theme.of(context).colorScheme.onBackground,
@@ -103,11 +104,10 @@ class MainScreenMobile extends StatelessWidget {
 
                                   if (surah.isEmpty) {
                                     return const Center(
-                                        child: Text('Surat tidak ditemukan'));
+                                        child: Text('Surah tidak ditemukan'));
                                   }
 
-                                  return SurahCard(
-                                      surah: surah, isSearching: false);
+                                  return SurahCard(surah: surah);
                                 } else if (snapshot.hasError) {
                                   SchedulerBinding.instance
                                       .addPostFrameCallback((_) => showDialog(
@@ -119,13 +119,7 @@ class MainScreenMobile extends StatelessWidget {
                                           }));
                                 }
 
-                                return Center(
-                                    child: CircularProgressIndicator(
-                                  backgroundColor: Theme.of(context)
-                                      .colorScheme
-                                      .inversePrimary,
-                                  color: Colors.white,
-                                ));
+                                return const SkeletonCardMobile();
                               },
                             ),
                           ),

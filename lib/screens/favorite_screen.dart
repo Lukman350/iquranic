@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:iquranic/components/appbar_title.dart';
-import 'package:iquranic/components/bottom_nav.dart';
-import 'package:iquranic/components/surah_card.dart';
 import 'package:iquranic/models/surah.dart';
+import 'package:iquranic/screens/mobile/favorite_screen.dart';
+import 'package:iquranic/screens/web/favorite_screen.dart';
 import 'package:iquranic/storage/favorite_storage.dart';
 
 class FavoriteScreen extends StatefulWidget {
@@ -23,78 +21,28 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   void initState() {
     super.initState();
     favorite = FavoriteStorage.readFavorite();
+    _getTotalFavorite();
+  }
+
+  Future<void> _getTotalFavorite() async {
+    var favorite = await FavoriteStorage.readFavorite();
+
+    setState(() {
+      totalFavorite = favorite.length;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () async {
-            Navigator.pop(context);
-          },
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const AppBarTitle(title: 'My Favorite'),
-        automaticallyImplyLeading: false,
-      ),
-      body: SafeArea(
-          child: Padding(
-              padding:
-                  const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                      'Total Favorite: ${totalFavorite.toString()}',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                  ),
-                  Expanded(
-                    flex: 10,
-                    child: FutureBuilder<List<Surah>>(
-                      future: favorite,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          SchedulerBinding.instance.addPostFrameCallback((_) {
-                            setState(() {
-                              totalFavorite = snapshot.data!.length;
-                            });
-                          });
-
-                          return snapshot.data!.isNotEmpty
-                              ? SurahCard(
-                                  surah: snapshot.data!,
-                                  isSearching: false,
-                                )
-                              : const Center(
-                                  child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.favorite_border,
-                                      size: 90,
-                                      color: Colors.grey,
-                                    ),
-                                    Text('Tidak ada surat favorite',
-                                        style: TextStyle(fontSize: 16)),
-                                  ],
-                                ));
-                        } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-                      },
-                    ),
-                  )
-                ],
-              ))),
-      bottomNavigationBar: const BottomNavWidget(currentIndex: 2),
-    );
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      if (constraints.maxWidth <= 600) {
+        return FavoriteScreenMobile(
+            favorite: favorite, totalFavorite: totalFavorite);
+      } else {
+        return FavoriteScreenWeb(
+            favorite: favorite, totalFavorite: totalFavorite);
+      }
+    });
   }
 }
