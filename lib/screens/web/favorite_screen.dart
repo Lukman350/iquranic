@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:iquranic/components/appbar_title.dart';
 import 'package:iquranic/components/drawer_web.dart';
@@ -16,6 +17,8 @@ class FavoriteScreenWeb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         leading: const LeadingMenu(),
@@ -44,7 +47,18 @@ class FavoriteScreenWeb extends StatelessWidget {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return snapshot.data!.isNotEmpty
-                              ? SurahCardDesktop(surah: snapshot.data!)
+                              ? SurahCardDesktop(
+                                  surah: snapshot.data!,
+                                  gridCount: kIsWeb &&
+                                          (screenWidth < 1200 &&
+                                              screenWidth >= 800)
+                                      ? 3
+                                      : (kIsWeb && screenWidth >= 1200 ? 4 : 2),
+                                  gridAspectRatio: kIsWeb &&
+                                          (screenWidth < 1200 &&
+                                              screenWidth >= 800)
+                                      ? 3
+                                      : (kIsWeb && screenWidth >= 1200 ? 4 : 5))
                               : const Center(
                                   child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -61,7 +75,15 @@ class FavoriteScreenWeb extends StatelessWidget {
                         } else if (snapshot.hasError) {
                           return Text('Error: ${snapshot.error}');
                         } else {
-                          return const SkeletonCardWeb();
+                          return SkeletonCardWeb(
+                              gridCount: kIsWeb &&
+                                      (screenWidth < 1200 && screenWidth >= 800)
+                                  ? 3
+                                  : (kIsWeb && screenWidth >= 1200 ? 4 : 2),
+                              gridAspectRatio: kIsWeb &&
+                                      (screenWidth < 1200 && screenWidth >= 800)
+                                  ? 3
+                                  : (kIsWeb && screenWidth >= 1200 ? 4 : 5));
                         }
                       },
                     ),

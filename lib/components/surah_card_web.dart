@@ -4,14 +4,21 @@ import 'package:iquranic/screens/surah_screen.dart';
 
 class SurahCardDesktop extends StatelessWidget {
   final List<Surah> surah;
+  final int gridCount;
+  final double gridAspectRatio;
 
-  const SurahCardDesktop({Key? key, required this.surah}) : super(key: key);
+  const SurahCardDesktop(
+      {Key? key,
+      required this.surah,
+      required this.gridCount,
+      required this.gridAspectRatio})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GridView.count(
-        childAspectRatio: 3,
-        crossAxisCount: 4,
+        childAspectRatio: gridAspectRatio,
+        crossAxisCount: gridCount,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
         children: surah.map((data) {

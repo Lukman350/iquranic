@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:hijri/hijri_calendar.dart';
@@ -42,62 +43,62 @@ class MainScreenDesktop extends StatelessWidget {
               flex: 1,
               child: Stack(
                 children: <Widget>[
-                  Positioned(
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: screenWidth,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.inversePrimary,
-                      ),
-                      child: Center(
-                          child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Image.asset(
-                            'assets/images/hero.png',
-                            width: 250,
-                            height: 250,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                'Assalamu\'alaikum\nSelamat Datang',
-                                style: TextStyle(
+                  Container(
+                    alignment: Alignment.center,
+                    width: screenWidth,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                    ),
+                    child: Center(
+                        child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Image.asset(
+                          'assets/images/hero.png',
+                          width: kIsWeb ? 250 : 150,
+                          height: kIsWeb ? 250 : 150,
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            kIsWeb
+                                ? Text(
+                                    'Assalamu\'alaikum\nSelamat Datang',
+                                    style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onBackground,
+                                      fontSize: 15,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    softWrap: true,
+                                  )
+                                : Container(),
+                            kIsWeb ? const SizedBox(height: 16) : Container(),
+                            Text(
+                              '${now.hour >= 10 ? '${now.hour}' : '0${now.hour}'}:${now.minute >= 10 ? '${now.minute}' : '0${now.minute}'}',
+                              style: TextStyle(
                                   color: Theme.of(context)
                                       .colorScheme
                                       .onBackground,
-                                  fontSize: 15,
-                                ),
-                                textAlign: TextAlign.center,
-                                softWrap: true,
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                '${now.hour >= 10 ? '${now.hour}' : '0${now.hour}'}:${now.minute >= 10 ? '${now.minute}' : '0${now.minute}'}',
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onBackground,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 36),
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                todayHijri.toFormat("MMMM dd, yyyyH"),
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onBackground,
-                                    fontSize: 15),
-                              ),
-                            ],
-                          ),
-                        ],
-                      )),
-                    ),
-                  )
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 36),
+                            ),
+                            kIsWeb ? const SizedBox(height: 16) : Container(),
+                            Text(
+                              todayHijri.toFormat("MMMM dd, yyyyH"),
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
+                                  fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )),
+                  ),
                 ],
               ),
             ),
@@ -107,36 +108,53 @@ class MainScreenDesktop extends StatelessWidget {
                 child: Stack(
                   alignment: Alignment.center,
                   children: <Widget>[
-                    Positioned(
-                      child: SizedBox(
-                        width: screenWidth <= 1200 ? 800 : 1200,
-                        child: FutureBuilder<SurahList>(
-                          future: surahList,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              var surah = snapshot.data!.data;
+                    SizedBox(
+                      width: screenWidth <= 1200 ? 800 : 1200,
+                      child: FutureBuilder<SurahList>(
+                        future: surahList,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            var surah = snapshot.data!.data;
 
-                              if (surah.isEmpty) {
-                                return const Center(
-                                    child: Text('Surah tidak ditemukan'));
-                              }
-
-                              return SurahCardDesktop(surah: surah);
-                            } else if (snapshot.hasError) {
-                              SchedulerBinding.instance
-                                  .addPostFrameCallback((_) => showDialog(
-                                      context: context,
-                                      builder: (_) {
-                                        return AlertError(
-                                            message: snapshot.error.toString());
-                                      }));
+                            if (surah.isEmpty) {
+                              return const Center(
+                                  child: Text('Surah tidak ditemukan'));
                             }
 
-                            return const SkeletonCardWeb();
-                          },
-                        ),
+                            return SurahCardDesktop(
+                                surah: surah,
+                                gridCount: kIsWeb &&
+                                        (screenWidth < 1200 &&
+                                            screenWidth >= 800)
+                                    ? 3
+                                    : (kIsWeb && screenWidth >= 1200 ? 4 : 2),
+                                gridAspectRatio: kIsWeb &&
+                                        (screenWidth < 1200 &&
+                                            screenWidth >= 800)
+                                    ? 3
+                                    : (kIsWeb && screenWidth >= 1200 ? 3 : 5));
+                          } else if (snapshot.hasError) {
+                            SchedulerBinding.instance
+                                .addPostFrameCallback((_) => showDialog(
+                                    context: context,
+                                    builder: (_) {
+                                      return AlertError(
+                                          message: snapshot.error.toString());
+                                    }));
+                          }
+
+                          return SkeletonCardWeb(
+                              gridCount: kIsWeb &&
+                                      (screenWidth < 1200 && screenWidth >= 800)
+                                  ? 3
+                                  : (kIsWeb && screenWidth >= 1200 ? 4 : 2),
+                              gridAspectRatio: kIsWeb &&
+                                      (screenWidth < 1200 && screenWidth >= 800)
+                                  ? 3
+                                  : (kIsWeb && screenWidth >= 1200 ? 3 : 5));
+                        },
                       ),
-                    )
+                    ),
                   ],
                 ))
           ]),

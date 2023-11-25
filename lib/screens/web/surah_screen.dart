@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -45,6 +46,40 @@ class _QuranScreenDesktopState extends State<QuranScreenDesktop> {
       appBar: AppBar(
           leading: const LeadingMenu(),
           actions: <Widget>[
+            DropdownMenu<String>(
+              initialSelection: widget.audioData.keys.first,
+              controller: widget.selectAudio,
+              width: 250,
+              hintText: widget.audioData.keys.first,
+              label: const Text('Pilih Qori:'),
+              onSelected: (value) {
+                setState(() {
+                  _selectedAudio = value ?? '01';
+                });
+              },
+              textStyle:
+                  TextStyle(color: Theme.of(context).colorScheme.onBackground),
+              menuStyle: MenuStyle(
+                backgroundColor: MaterialStateProperty.all(
+                    Theme.of(context).colorScheme.inversePrimary),
+                elevation: MaterialStateProperty.all(4.0),
+              ),
+              inputDecorationTheme: InputDecorationTheme(
+                contentPadding: EdgeInsetsGeometry.lerp(
+                    const EdgeInsets.only(left: 12.0),
+                    const EdgeInsets.only(left: 12.0),
+                    1)!,
+                filled: true,
+                fillColor: Theme.of(context).colorScheme.onPrimary,
+              ),
+              dropdownMenuEntries: widget.audioData.values.map((value) {
+                return DropdownMenuEntry<String>(
+                  value: value,
+                  label: widget.audioData.keys.firstWhere(
+                      (element) => widget.audioData[element] == value),
+                );
+              }).toList(),
+            ),
             FavoriteButton(
               surah: widget.favorite,
             ),
@@ -60,143 +95,114 @@ class _QuranScreenDesktopState extends State<QuranScreenDesktop> {
                     padding: const EdgeInsets.only(
                         top: 16.0, left: 16.0, right: 16.0),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        Expanded(
-                          flex: 1,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(widget.args.arti.toUpperCase(),
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSecondaryContainer,
-                                          fontSize: 18)),
-                                  Text(
-                                      'Asal: ${widget.args.tempatTurun.toUpperCase()}',
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSecondaryContainer,
-                                          fontSize: 18)),
-                                  Text(
-                                      '${widget.args.jumlahAyat.toString()} AYAT',
-                                      style: const TextStyle(
-                                          color: Colors.black54,
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 12)),
-                                ],
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: <Widget>[
-                                  ElevatedButton(
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateColor.resolveWith(
-                                                (states) => Theme.of(context)
-                                                    .colorScheme
-                                                    .primary),
-                                      ),
-                                      onPressed: () {
-                                        SchedulerBinding.instance
-                                            .addPostFrameCallback((_) {
-                                          showDialog(
-                                              context: context,
-                                              builder: (_) {
-                                                return AlertDialog(
-                                                  title: Text(
-                                                      widget.args.namaLatin),
-                                                  content: Text(
-                                                    widget.args.deskripsi
-                                                        .replaceAll('<i>', '')
-                                                        .replaceAll('</i>', '')
-                                                        .replaceAll('<br>', '')
-                                                        .replaceAllMapped(
-                                                            RegExp(
-                                                                '.{1,100}(?:\\s|\$)'),
-                                                            (match) =>
-                                                                '${match.group(0)}\n'),
-                                                    textAlign:
-                                                        TextAlign.justify,
-                                                  ),
-                                                  actions: <Widget>[
-                                                    ElevatedButton(
-                                                      style: ButtonStyle(
-                                                        backgroundColor: MaterialStateColor
-                                                            .resolveWith((states) =>
-                                                                Theme.of(
-                                                                        context)
-                                                                    .colorScheme
-                                                                    .primary),
-                                                      ),
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: const Text('Tutup',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 18)),
-                                                    ),
-                                                  ],
-                                                );
-                                              });
-                                        });
-                                      },
-                                      child: const Text('Deskripsi',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18))),
-                                  AudioWidget(
-                                      player: widget.audioPlayer,
-                                      url: widget
-                                          .args.audioFull[_selectedAudio]),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: DropdownMenu<String>(
-                            initialSelection: widget.audioData.keys.first,
-                            controller: widget.selectAudio,
-                            label: const Text('Pilih Qori'),
-                            width: screenWidth <= 1200 ? 800 : 1200,
-                            onSelected: (value) {
-                              setState(() {
-                                _selectedAudio = value ?? '01';
-                              });
-                            },
-                            textStyle: TextStyle(
-                                color:
-                                    Theme.of(context).colorScheme.onBackground),
-                            menuStyle: MenuStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  Theme.of(context).colorScheme.inversePrimary),
-                              elevation: MaterialStateProperty.all(4.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(widget.args.arti.toUpperCase(),
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSecondaryContainer,
+                                        fontSize: 18)),
+                                Text(
+                                    'Asal: ${widget.args.tempatTurun.toUpperCase()}',
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSecondaryContainer,
+                                        fontSize: 18)),
+                                Text(
+                                    '${widget.args.jumlahAyat.toString()} AYAT',
+                                    style: const TextStyle(
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 12)),
+                              ],
                             ),
-                            inputDecorationTheme:
-                                const InputDecorationTheme(filled: true),
-                            dropdownMenuEntries:
-                                widget.audioData.values.map((value) {
-                              return DropdownMenuEntry<String>(
-                                value: value,
-                                label: widget.audioData.keys.firstWhere(
-                                    (element) =>
-                                        widget.audioData[element] == value),
-                              );
-                            }).toList(),
-                          ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateColor.resolveWith(
+                                              (states) => Theme.of(context)
+                                                  .colorScheme
+                                                  .primary),
+                                    ),
+                                    onPressed: () {
+                                      SchedulerBinding.instance
+                                          .addPostFrameCallback((_) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (_) {
+                                              return AlertDialog(
+                                                scrollable: true,
+                                                title:
+                                                    Text(widget.args.namaLatin),
+                                                content: Text(
+                                                  kIsWeb
+                                                      ? widget.args.deskripsi
+                                                          .replaceAll('<i>', '')
+                                                          .replaceAll(
+                                                              '</i>', '')
+                                                          .replaceAll(
+                                                              '<br>', '')
+                                                          .replaceAllMapped(
+                                                              RegExp(
+                                                                  '.{1,100}(?:\\s|\$)'),
+                                                              (match) =>
+                                                                  '${match.group(0)}\n')
+                                                      : widget.args.deskripsi
+                                                          .replaceAll(
+                                                              RegExp(
+                                                                  r'<[^>]*>|&[^;]+;'),
+                                                              ''),
+                                                  textAlign: TextAlign.justify,
+                                                ),
+                                                actions: <Widget>[
+                                                  ElevatedButton(
+                                                    style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStateColor
+                                                              .resolveWith((states) =>
+                                                                  Theme.of(
+                                                                          context)
+                                                                      .colorScheme
+                                                                      .primary),
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text('Tutup',
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 18)),
+                                                  ),
+                                                ],
+                                              );
+                                            });
+                                      });
+                                    },
+                                    child: const Text('Deskripsi',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18))),
+                                AudioWidget(
+                                    player: widget.audioPlayer,
+                                    url: widget.args.audioFull[_selectedAudio]),
+                              ],
+                            )
+                          ],
                         ),
-                        Expanded(
-                            flex: 7,
+                        Flexible(
+                            flex: 2,
                             child: FutureBuilder<AyatList>(
                               future: widget.futureAyat,
                               builder: (context, snapshot) {
