@@ -35,51 +35,56 @@ class MainScreenMobile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Expanded(
+                      flex: 2,
                       child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Text(
-                            'Assalamu\'alaikum\nSelamat Datang',
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.onBackground,
-                              fontSize: 15,
-                            ),
-                            textAlign: TextAlign.center,
-                            softWrap: true,
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'Assalamu\'alaikum\nSelamat Datang',
+                                style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
+                                  fontSize: 15,
+                                ),
+                                textAlign: TextAlign.center,
+                                softWrap: true,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                '${now.hour >= 10 ? '${now.hour}' : '0${now.hour}'}:${now.minute >= 10 ? '${now.minute}' : '0${now.minute}'}',
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 36),
+                              ),
+                              Text(
+                                todayHijri.toFormat('MMMM dd, yyyyH'),
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 10),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 16),
-                          Text(
-                            '${now.hour >= 10 ? '${now.hour}' : '0${now.hour}'}:${now.minute >= 10 ? '${now.minute}' : '0${now.minute}'}',
-                            style: TextStyle(
-                                color:
-                                    Theme.of(context).colorScheme.onBackground,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 36),
-                          ),
-                          Text(
-                            todayHijri.toFormat('MMMM dd, yyyyH'),
-                            style: TextStyle(
-                                color:
-                                    Theme.of(context).colorScheme.onBackground,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10),
+                          const SizedBox(width: 16),
+                          Image.asset(
+                            'assets/images/hero.png',
+                            fit: BoxFit.cover,
+                            width: 180,
+                            height: 180,
+                            scale: 1,
+                            alignment: Alignment.center,
                           ),
                         ],
-                      ),
-                      const SizedBox(width: 16),
-                      Image.asset(
-                        'assets/images/hero.png',
-                        fit: BoxFit.cover,
-                        width: 180,
-                        height: 180,
-                        scale: 1,
-                        alignment: Alignment.center,
-                      ),
-                    ],
-                  )),
+                      )),
                   const SizedBox(height: 16),
                   Expanded(
                       flex: 3,

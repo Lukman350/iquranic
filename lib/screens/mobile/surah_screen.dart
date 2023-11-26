@@ -38,6 +38,8 @@ class _QuranScreenMobileState extends State<QuranScreenMobile> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
         appBar: AppBar(
             leading: IconButton(
@@ -174,7 +176,7 @@ class _QuranScreenMobileState extends State<QuranScreenMobile> {
                 ),
               ),
               Expanded(
-                  flex: 4,
+                  flex: screenHeight < 800 ? 3 : 5,
                   child: FutureBuilder<AyatList>(
                     future: widget.futureAyat,
                     builder: (context, snapshot) {
