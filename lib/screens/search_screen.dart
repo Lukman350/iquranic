@@ -2,15 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:iquranic/screens/mobile/search_screen.dart';
 import 'package:iquranic/screens/web/search_screen.dart';
 
-class SearchScreen extends StatefulWidget {
+class SearchScreen extends StatelessWidget {
   static const routeName = '/search';
-  const SearchScreen({super.key});
 
-  @override
-  State<SearchScreen> createState() => _SearchScreenState();
-}
+  const SearchScreen({Key? key}) : super(key: key);
 
-class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(

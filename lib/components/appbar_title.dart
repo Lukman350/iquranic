@@ -23,7 +23,7 @@ class AppBarTitle extends StatelessWidget {
                     blurRadius: 1.0,
                     color: Color.fromARGB(255, 0, 0, 0),
                   ),
-                ]))
+                ])),
       ],
     );
   }

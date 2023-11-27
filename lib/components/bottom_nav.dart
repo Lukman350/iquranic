@@ -3,23 +3,18 @@ import 'package:iquranic/screens/favorite_screen.dart';
 import 'package:iquranic/screens/main_screen.dart';
 import 'package:iquranic/screens/search_screen.dart';
 
-class BottomNavWidget extends StatefulWidget {
+class BottomNavWidget extends StatelessWidget {
   final int currentIndex;
   const BottomNavWidget({Key? key, required this.currentIndex})
       : super(key: key);
 
-  @override
-  State<BottomNavWidget> createState() => _BottonNavWidgetState();
-}
-
-class _BottonNavWidgetState extends State<BottomNavWidget> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       backgroundColor: Theme.of(context).colorScheme.primary,
       selectedItemColor: Colors.white,
       unselectedItemColor: Colors.white.withOpacity(0.5),
-      currentIndex: widget.currentIndex,
+      currentIndex: currentIndex,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
