@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hijri/hijri_calendar.dart';
-import 'package:iquranic/components/alert_error.dart';
-import 'package:iquranic/components/appbar_title.dart';
-import 'package:iquranic/components/skeleton_mobile.dart';
-import 'package:iquranic/components/surah_card.dart';
 import 'package:iquranic/models/surah.dart';
 import 'package:iquranic/components/bottom_nav.dart';
+import 'package:iquranic/themes/app_colors.dart';
 
 class MainScreenMobile extends StatelessWidget {
   final Future<SurahList> surahList;
   final DateTime now;
-  static const String _title = 'iQuranic';
   final HijriCalendar todayHijri;
 
   const MainScreenMobile(
@@ -23,118 +20,268 @@ class MainScreenMobile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          title: const AppBarTitle(title: _title),
-          automaticallyImplyLeading: false),
-      body: SafeArea(
-          child: Padding(
-              padding:
-                  const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                      flex: 2,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                'Assalamu\'alaikum\nSelamat Datang',
-                                style: TextStyle(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
-                                  fontSize: 15,
+      body: BlocProvider(
+        lazy: false,
+        create: (context) => MainScreenCubit(),
+        child:
+            BlocBuilder<MainScreenCubit, User>(builder: (context, User user) {
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                // appbar
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      children: [
+                        InkWell(
+                          onTap: () {},
+                          radius: 20.0,
+                          borderRadius: BorderRadius.circular(20.0),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 10,
+                            ),
+                            child: Image.asset(
+                              'assets/images/hamburger_menu.png',
+                              width: 24,
+                            ),
+                          ),
+                        ),
+                        const Text(
+                          'iQuranic',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        const Spacer(),
+                        SearchBar(
+                          trailing: Iterable.generate(1).map((e) {
+                            return InkWell(
+                              onTap: () {},
+                              child: const Icon(
+                                Icons.search,
+                                size: 18,
+                                color: AppColors.primary,
+                              ),
+                            );
+                          }).toList(),
+                          constraints: const BoxConstraints(
+                            maxWidth: 110,
+                            minHeight: 35,
+                          ),
+                          textStyle: MaterialStateProperty.resolveWith(
+                            (states) => const TextStyle(
+                              fontSize: 12,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                          backgroundColor: MaterialStateColor.resolveWith(
+                            (states) => AppColors.secondaryLight,
+                          ),
+                          shape: MaterialStateProperty.resolveWith(
+                            (states) => RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        InkWell(
+                          onTap: () {},
+                          child: Container(
+                            width: 35,
+                            height: 35,
+                            decoration: BoxDecoration(
+                              color: AppColors.secondaryLight,
+                              borderRadius: BorderRadius.circular(50),
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                  user.photoURL ??
+                                      'https://via.placeholder.com/35',
                                 ),
-                                textAlign: TextAlign.center,
-                                softWrap: true,
                               ),
-                              const SizedBox(height: 16),
-                              Text(
-                                '${now.hour >= 10 ? '${now.hour}' : '0${now.hour}'}:${now.minute >= 10 ? '${now.minute}' : '0${now.minute}'}',
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onBackground,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 36),
-                              ),
-                              Text(
-                                todayHijri.toFormat('MMMM dd, yyyyH'),
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onBackground,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 10),
-                              ),
-                            ],
+                            ),
                           ),
-                          const SizedBox(width: 16),
-                          Image.asset(
-                            'assets/images/hero.png',
-                            fit: BoxFit.cover,
-                            width: 180,
-                            height: 180,
-                            scale: 1,
-                            alignment: Alignment.center,
-                          ),
-                        ],
-                      )),
-                  const SizedBox(height: 16),
-                  Expanded(
-                      flex: 3,
-                      child: Column(
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // greeting
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
+                    children: [
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            'Surah Qur\'an',
+                        children: [
+                          const Text(
+                            'Assalamu\'alaikum,',
                             style: TextStyle(
-                                color:
-                                    Theme.of(context).colorScheme.onBackground,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18),
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.secondary,
+                            ),
                           ),
-                          const SizedBox(height: 16),
-                          Expanded(
-                            child: FutureBuilder<SurahList>(
-                              future: surahList,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  var surah = snapshot.data!.data;
-
-                                  if (surah.isEmpty) {
-                                    return const Center(
-                                        child: Text('Surah tidak ditemukan'));
-                                  }
-
-                                  return SurahCard(surah: surah);
-                                } else if (snapshot.hasError) {
-                                  SchedulerBinding.instance
-                                      .addPostFrameCallback((_) => showDialog(
-                                          context: context,
-                                          builder: (_) {
-                                            return AlertError(
-                                                message:
-                                                    snapshot.error.toString());
-                                          }));
-                                }
-
-                                return const SkeletonCardMobile();
-                              },
+                          Text(
+                            user.displayName ?? 'User',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
                             ),
                           ),
                         ],
-                      ))
-                ],
-              ))),
+                      ),
+                      const Spacer(),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '${now.hour >= 10 ? '${now.hour}' : '0${now.hour}'}:${now.minute >= 10 ? '${now.minute}' : '0${now.minute}'} ${now.hour >= 12 ? 'PM' : 'AM'}',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.secondary,
+                            ),
+                          ),
+                          Text(
+                            todayHijri.toFormat('MMMM dd, yyyyH'),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                // last read surah
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  child: InkWell(
+                    onTap: () {},
+                    radius: 20.0,
+                    hoverColor: AppColors.secondaryLight,
+                    child: Container(
+                      height: 130,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: AppColors.secondaryLight,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.menu_book_rounded,
+                                      size: 18,
+                                      color: AppColors.primary,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Text(
+                                      'Terakhir dibaca',
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
+                                const Text(
+                                  'Al-Fatihah',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                const Text(
+                                  'Jumlah Ayat: 7',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+                            Image.asset(
+                              'assets/images/quran.png',
+                              width: 75,
+                              fit: BoxFit.cover,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                // Tab Surah
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  child: DefaultTabController(
+                    length: 3,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TabBar(tabs: [
+                          Tab(
+                            text: 'Surah',
+                          ),
+                          Tab(
+                            text: 'Juz',
+                          ),
+                          Tab(
+                            text: 'Doa',
+                          ),
+                        ]),
+                        const SizedBox(height: 10),
+                        TabBarView(children: [
+                          Text('Surah'),
+                          Text('Juz'),
+                          Text('Doa'),
+                        ]),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+      ),
       bottomNavigationBar: const BottomNavWidget(
         currentIndex: 0,
       ),
     );
+  }
+}
+
+class MainScreenCubit extends Cubit<User> {
+  MainScreenCubit() : super(FirebaseAuth.instance.currentUser!);
+
+  void signOut() async {
+    await FirebaseAuth.instance.signOut();
   }
 }

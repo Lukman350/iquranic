@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iquranic/themes/app_colors.dart';
 
 class AppBarTitle extends StatelessWidget {
   final String title;
@@ -9,21 +10,14 @@ class AppBarTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        Image.asset('assets/images/logo-transparent.png',
-            width: 50, height: 50),
-        const SizedBox(width: 8),
-        Text(title,
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimary,
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
-                shadows: const <Shadow>[
-                  Shadow(
-                    offset: Offset(1.0, 1.0),
-                    blurRadius: 1.0,
-                    color: Color.fromARGB(255, 0, 0, 0),
-                  ),
-                ])),
+        Text(
+          title,
+          style: const TextStyle(
+            color: AppColors.primary,
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
       ],
     );
   }

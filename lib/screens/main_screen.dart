@@ -7,7 +7,7 @@ import 'package:iquranic/screens/mobile/main_screen.dart';
 import 'package:iquranic/screens/web/main_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  static const routeName = '/';
+  static const routeName = '/home';
   const MainScreen({super.key});
 
   @override
