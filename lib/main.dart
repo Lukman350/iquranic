@@ -1,10 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:iquranic/screens/favorite_screen.dart';
-import 'package:iquranic/screens/main_screen.dart';
-import 'package:iquranic/screens/search_screen.dart';
-import 'package:iquranic/screens/surah_screen.dart';
+import 'package:iquranic/app_view.dart';
+import 'package:iquranic/cubit/theme_cubit.dart';
+import 'firebase/options/firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(const MyApp());
 }
 
@@ -13,20 +17,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'iQuranic',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromRGBO(149, 67, 255, 1)),
-        useMaterial3: true,
-        fontFamily: 'Poppins',
-      ),
-      routes: {
-        MainScreen.routeName: (context) => const MainScreen(),
-        QuranScreen.routeName: (context) => const QuranScreen(),
-        SearchScreen.routeName: (context) => const SearchScreen(),
-        FavoriteScreen.routeName: (context) => const FavoriteScreen(),
-      },
+    return BlocProvider(
+      create: (_) => ThemeCubit(),
+      child: const AppView(),
     );
   }
 }
