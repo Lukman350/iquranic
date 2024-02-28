@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,9 +23,11 @@ class MainScreenMobile extends StatelessWidget {
     return Scaffold(
       body: BlocProvider(
         lazy: false,
-        create: (context) => MainScreenCubit(),
-        child:
-            BlocBuilder<MainScreenCubit, User>(builder: (context, User user) {
+        create: (context) => MainScreenCubit(
+          FirebaseAuth.instance,
+        ),
+        child: BlocBuilder<MainScreenCubit, MainScreenState>(
+            builder: (context, MainScreenState state) {
           return SingleChildScrollView(
             child: Column(
               children: [
@@ -99,7 +102,7 @@ class MainScreenMobile extends StatelessWidget {
                               borderRadius: BorderRadius.circular(50),
                               image: DecorationImage(
                                 image: NetworkImage(
-                                  user.photoURL ??
+                                  state.user?.photoURL ??
                                       'https://via.placeholder.com/35',
                                 ),
                               ),
@@ -127,7 +130,7 @@ class MainScreenMobile extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            user.displayName ?? 'User',
+                            state.user?.displayName ?? 'User',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -181,20 +184,20 @@ class MainScreenMobile extends StatelessWidget {
                         padding: const EdgeInsets.all(20.0),
                         child: Row(
                           children: [
-                            Column(
+                            const Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   children: [
-                                    const Icon(
+                                    Icon(
                                       Icons.menu_book_rounded,
                                       size: 18,
                                       color: AppColors.primary,
                                     ),
-                                    const SizedBox(width: 12),
+                                    SizedBox(width: 12),
                                     Text(
                                       'Terakhir dibaca',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.w600,
                                         color: AppColors.primary,
@@ -202,8 +205,8 @@ class MainScreenMobile extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 20),
-                                const Text(
+                                SizedBox(height: 20),
+                                Text(
                                   'Al-Fatihah',
                                   style: TextStyle(
                                     fontSize: 13,
@@ -211,8 +214,8 @@ class MainScreenMobile extends StatelessWidget {
                                     color: AppColors.primary,
                                   ),
                                 ),
-                                const SizedBox(height: 5),
-                                const Text(
+                                SizedBox(height: 5),
+                                Text(
                                   'Jumlah Ayat: 7',
                                   style: TextStyle(
                                     fontSize: 10,
@@ -242,29 +245,39 @@ class MainScreenMobile extends StatelessWidget {
                   ),
                   child: DefaultTabController(
                     length: 3,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TabBar(tabs: [
-                          Tab(
-                            text: 'Surah',
-                          ),
-                          Tab(
-                            text: 'Juz',
-                          ),
-                          Tab(
-                            text: 'Doa',
-                          ),
-                        ]),
-                        const SizedBox(height: 10),
-                        TabBarView(children: [
-                          Text('Surah'),
-                          Text('Juz'),
-                          Text('Doa'),
-                        ]),
+                    child: TabBar(
+                      labelColor: AppColors.primary,
+                      unselectedLabelColor: AppColors.secondary,
+                      indicatorColor: AppColors.primary,
+                      dividerColor: AppColors.secondaryLight,
+                      dividerHeight: 3,
+                      unselectedLabelStyle: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      labelStyle: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      onTap: (index) {
+                        context.read<MainScreenCubit>().changeTabView(index);
+                      },
+                      dragStartBehavior: DragStartBehavior.down,
+                      tabs: const [
+                        Tab(text: 'Surah'),
+                        Tab(text: 'Surah Pilihan'),
+                        Tab(text: 'Surah Terakhir'),
                       ],
                     ),
                   ),
+                ),
+                // Tab view
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  child: state.tabView[state.currentTabIndex],
                 ),
               ],
             ),
@@ -278,10 +291,43 @@ class MainScreenMobile extends StatelessWidget {
   }
 }
 
-class MainScreenCubit extends Cubit<User> {
-  MainScreenCubit() : super(FirebaseAuth.instance.currentUser!);
+class MainScreenState {
+  int currentTabIndex;
+  User? user;
+  bool loading;
+  String? error;
+
+  final List<Widget> tabView = [
+    const Text('Surah'),
+    const Text('Surah Pilihan'),
+    const Text('Surah Terakhir'),
+  ];
+
+  MainScreenState(
+      {this.currentTabIndex = 0, this.user, this.loading = false, this.error});
+
+  MainScreenState.changeTabView(int index)
+      : this(currentTabIndex: index, loading: false);
+  MainScreenState.loading() : this(loading: true);
+  MainScreenState.error(String message) : this(error: message, loading: false);
+}
+
+class MainScreenCubit extends Cubit<MainScreenState> {
+  final FirebaseAuth _auth;
+
+  MainScreenCubit(this._auth) : super(MainScreenState(user: _auth.currentUser));
+
+  void changeTabView(int index) {
+    emit(MainScreenState.changeTabView(index));
+  }
 
   void signOut() async {
-    await FirebaseAuth.instance.signOut();
+    emit(MainScreenState.loading());
+
+    try {
+      await _auth.signOut();
+    } on FirebaseAuthException catch (e) {
+      emit(MainScreenState.error(e.message!));
+    }
   }
 }
