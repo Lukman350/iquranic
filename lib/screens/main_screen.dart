@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:iquranic/api/api.dart';
+import 'package:iquranic/bloc/mainscreen_bloc.dart';
 import 'package:iquranic/models/surah.dart';
 import 'package:iquranic/screens/mobile/main_screen.dart';
 import 'package:iquranic/screens/web/main_screen.dart';
@@ -46,8 +48,11 @@ class _MainScreenState extends State<MainScreen> {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       if (constraints.maxWidth <= 600) {
-        return MainScreenMobile(
-            surahList: _surahList, now: _now, todayHijri: _today);
+        return BlocProvider<MainScreenBloc>(
+          create: (context) => MainScreenBloc(),
+          child: MainScreenMobile(
+              surahList: _surahList, now: _now, todayHijri: _today),
+        );
       } else {
         return MainScreenDesktop(
             surahList: _surahList, now: _now, todayHijri: _today);
