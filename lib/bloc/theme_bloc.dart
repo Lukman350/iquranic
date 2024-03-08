@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import '../storage/theme_storage.dart';
 import '../themes/app_colors.dart';
 
-class ThemeCubit extends Cubit<ThemeData> {
-  ThemeCubit() : super(_themeLight);
+class ThemeBloc extends Cubit<ThemeData> {
+  ThemeBloc() : super(_themeLight);
 
   static final _themeLight = ThemeData(
     brightness: Brightness.light,
