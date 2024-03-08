@@ -32,13 +32,13 @@ class MyAppBar extends StatelessWidget {
                 ),
               ),
             ),
-            const Text(
+            const SizedBox(width: 10),
+            Text(
               'iQuranic',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primary,
-              ),
+              style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const Spacer(),
             SearchBar(
@@ -92,18 +92,23 @@ class MyAppBar extends StatelessWidget {
 
                   Navigator.of(context).pushReplacementNamed('/auth');
                 },
-                child: Container(
-                  width: 35,
-                  height: 35,
-                  decoration: BoxDecoration(
-                    color: AppColors.secondaryLight,
-                    borderRadius: BorderRadius.circular(50),
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        userCubit.photoURL ?? 'https://via.placeholder.com/35',
+                child: BlocBuilder<UserBloc, User?>(
+                  bloc: userCubit,
+                  builder: (context, state) {
+                    return Container(
+                      width: 35,
+                      height: 35,
+                      decoration: BoxDecoration(
+                        color: AppColors.secondaryLight,
+                        borderRadius: BorderRadius.circular(50),
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            state?.photoURL ?? 'https://via.placeholder.com/35',
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
               ),
             ),

@@ -20,6 +20,7 @@ dependencies:
   flutter_bloc: ^8.1.4
   flutter_facebook_auth: ^6.1.1
   flutter_launcher_icons: ^0.13.1
+  google_fonts: 6.1.0
   google_sign_in: ^6.2.1
   hijri: ^3.0.0
   http: ^1.1.0
@@ -36,33 +37,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
-    - assets/fonts/
-  fonts:
-    - family: Poppins
-      fonts:
-        - asset: assets/fonts/Poppins/Poppins-Regular.ttf
-        - asset: assets/fonts/Poppins/Poppins-Italic.ttf
-          style: italic
-        - asset: assets/fonts/Poppins/Poppins-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/Poppins/Poppins-BoldItalic.ttf
-          weight: 700
-          style: italic
-        - asset: assets/fonts/Poppins/Poppins-Light.ttf
-          weight: 300
-        - asset: assets/fonts/Poppins/Poppins-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/Poppins/Poppins-SemiBold.ttf
-          weight: 600
-    - family: Lateef
-      fonts:
-        - asset: assets/fonts/Lateef/Lateef-Regular.ttf
-        - asset: assets/fonts/Lateef/Lateef-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/Lateef/Lateef-Light.ttf
-          weight: 300
-        - asset: assets/fonts/Lateef/Lateef-ExtraBold.ttf
-          weight: 800
+  # fonts:
 
 flutter_launcher_icons:
   android: 'ic_launcher'

@@ -50,8 +50,7 @@ class _MainScreenState extends State<MainScreen> {
       if (constraints.maxWidth <= 600) {
         return BlocProvider<MainScreenBloc>(
           create: (context) => MainScreenBloc(),
-          child: MainScreenMobile(
-              surahList: _surahList, now: _now, todayHijri: _today),
+          child: MainScreenMobile(now: _now, todayHijri: _today),
         );
       } else {
         return MainScreenDesktop(

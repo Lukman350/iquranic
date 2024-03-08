@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iquranic/components/appbar_title.dart';
 import 'package:iquranic/components/bottom_nav.dart';
-import 'package:iquranic/components/skeleton_mobile.dart';
+import 'package:iquranic/components/skeleton_card_mobile.dart';
 import 'package:iquranic/components/surah_card.dart';
 import 'package:iquranic/models/surah.dart';
 
@@ -48,7 +48,8 @@ class FavoriteScreenMobile extends StatelessWidget {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return snapshot.data!.isNotEmpty
-                              ? SurahCard(surah: snapshot.data!)
+                              // ? SurahCard(surah: snapshot.data!)
+                              ? Container()
                               : const Center(
                                   child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,

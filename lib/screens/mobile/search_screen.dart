@@ -4,7 +4,7 @@ import 'package:iquranic/api/api.dart';
 import 'package:iquranic/components/alert_error.dart';
 import 'package:iquranic/components/appbar_title.dart';
 import 'package:iquranic/components/bottom_nav.dart';
-import 'package:iquranic/components/skeleton_mobile.dart';
+import 'package:iquranic/components/skeleton_card_mobile.dart';
 import 'package:iquranic/components/surah_card.dart';
 import 'package:iquranic/models/surah.dart';
 
@@ -89,7 +89,7 @@ class _SearchScreenMobileState extends State<SearchScreenMobile> {
                                     }));
                           }
 
-                          return SurahCard(surah: surah);
+                          // return SurahCard(surah: surah);
                         } else if (snapshot.hasError) {
                           SchedulerBinding.instance
                               .addPostFrameCallback((_) => showDialog(

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iquranic/widgets/views/surahlist_view.dart';
+
+import 'surah_bloc.dart';
 
 class MainScreenState {
   int currentTabIndex;
@@ -7,9 +10,11 @@ class MainScreenState {
   String? error;
 
   final List<Widget> tabView = [
-    const Text('Surah'),
-    const Text('Surah Pilihan'),
-    const Text('Surah Terakhir'),
+    BlocProvider(
+      create: (context) => SurahBloc([]),
+      child: const SurahListView(),
+    ),
+    const Text('Doa'),
   ];
 
   MainScreenState({this.currentTabIndex = 0, this.loading = false, this.error});
