@@ -21,7 +21,13 @@ class AuthScreen extends StatelessWidget {
             password: password,
           );
     } catch (e) {
-      debugPrint(e.toString());
+      Future.delayed(
+        Duration.zero,
+        () => showSnackBar(
+          context: context,
+          message: e.toString(),
+        ),
+      );
     }
   }
 
@@ -273,7 +279,7 @@ class AuthScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 20),
                           ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (state.authFormKey.currentState!.validate()) {
                                 doSignIn(
                                   cubitContext,
@@ -435,26 +441,31 @@ class AuthScreen extends StatelessWidget {
 }
 
 class AuthState {
-  final bool isLoading;
-  final String? error;
-  final bool isPasswordVisible;
+  bool? isLoading;
+  String? error;
+  bool? isPasswordVisible;
 
   final authFormKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  AuthState({
-    this.isLoading = false,
-    this.error,
-    this.isPasswordVisible = false,
-  });
+  AuthState();
 
-  AuthState.loading() : this(isLoading: true);
-  AuthState.success() : this();
-  AuthState.error(String error) : this(error: error);
-  AuthState.togglePasswordVisibility(
-    bool value,
-  ) : this(isPasswordVisible: value, isLoading: false);
+  set loading(bool value) {
+    isLoading = value;
+  }
+
+  set errorMessage(String value) {
+    error = value;
+  }
+
+  set passwordVisibility(bool value) {
+    isPasswordVisible = value;
+  }
+
+  bool get isFormLoading => isLoading ?? false;
+  String get errorMessage => error ?? '';
+  bool get isPasswordFieldVisible => isPasswordVisible ?? false;
 }
 
 class AuthCubit extends Cubit<AuthState> {

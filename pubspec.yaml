@@ -1,6 +1,7 @@
 name: iquranic
 
-description: 'A Electronic Quran app that helps you to read, understand, and search the Quran. It also has a feature to listen to the Quran recitation.'
+description: 'A Electronic Quran app that helps you to read, understand, and
+  search the Quran. It also has a feature to listen to the Quran recitation.'
 
 publish_to: 'none'
 
@@ -10,26 +11,26 @@ environment:
   sdk: '>=3.2.0 <4.0.0'
 
 dependencies:
+  cupertino_icons: ^1.0.2
+  equatable: ^2.0.5
+  firebase_auth: ^4.17.4
+  firebase_core: ^2.25.4
   flutter:
     sdk: flutter
-
-  cupertino_icons: ^1.0.2
-  http: ^1.1.0
-  hijri: ^3.0.0
+  flutter_bloc: ^8.1.4
+  flutter_facebook_auth: ^6.1.1
   flutter_launcher_icons: ^0.13.1
+  google_sign_in: ^6.2.1
+  hijri: ^3.0.0
+  http: ^1.1.0
+  just_audio: ^0.9.36
   localstorage: ^4.0.1+4
   skeletons: ^0.0.3
-  just_audio: ^0.9.36
-  firebase_core: ^2.25.4
-  firebase_auth: ^4.17.4
-  flutter_bloc: ^8.1.4
-  google_sign_in: ^6.2.1
-  flutter_facebook_auth: ^6.1.1
 
 dev_dependencies:
+  flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
 
 flutter:
   uses-material-design: true
