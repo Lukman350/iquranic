@@ -6,6 +6,7 @@ import 'package:iquranic/components/leading_menu.dart';
 import 'package:iquranic/components/skeleton_web.dart';
 import 'package:iquranic/components/surah_card_web.dart';
 import 'package:iquranic/models/surah.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class FavoriteScreenWeb extends StatelessWidget {
   final Future<List<Surah>> favorite;
@@ -75,7 +76,8 @@ class FavoriteScreenWeb extends StatelessWidget {
                         } else if (snapshot.hasError) {
                           return Text('Error: ${snapshot.error}');
                         } else {
-                          return SkeletonCardWeb(
+                          return Skeletonizer(
+                            child: SkeletonCardWeb(
                               gridCount: kIsWeb &&
                                       (screenWidth < 1200 && screenWidth >= 800)
                                   ? 3
@@ -83,7 +85,9 @@ class FavoriteScreenWeb extends StatelessWidget {
                               gridAspectRatio: kIsWeb &&
                                       (screenWidth < 1200 && screenWidth >= 800)
                                   ? 3
-                                  : (kIsWeb && screenWidth >= 1200 ? 4 : 5));
+                                  : (kIsWeb && screenWidth >= 1200 ? 4 : 5),
+                            ),
+                          );
                         }
                       },
                     ),

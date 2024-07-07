@@ -57,16 +57,16 @@ class MyAppBar extends StatelessWidget {
                 maxWidth: 110,
                 minHeight: 35,
               ),
-              textStyle: MaterialStateProperty.resolveWith(
+              textStyle: WidgetStateProperty.resolveWith(
                 (states) => const TextStyle(
                   fontSize: 12,
                   color: AppColors.primary,
                 ),
               ),
-              backgroundColor: MaterialStateColor.resolveWith(
+              backgroundColor: WidgetStateColor.resolveWith(
                 (states) => AppColors.secondaryLight,
               ),
-              shape: MaterialStateProperty.resolveWith(
+              shape: WidgetStateProperty.resolveWith(
                 (states) => RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50),
                 ),

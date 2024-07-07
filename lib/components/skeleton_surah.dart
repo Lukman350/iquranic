@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:skeletons/skeletons.dart';
 
 class SkeletonSurah extends StatelessWidget {
   const SkeletonSurah({Key? key}) : super(key: key);
@@ -11,32 +10,33 @@ class SkeletonSurah extends StatelessWidget {
       itemBuilder: (context, int index) {
         return Column(
           children: <Widget>[
-            const Card(
+            Card(
                 child: Padding(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                   top: 4.0, bottom: 4.0, left: 16.0, right: 16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  SkeletonAvatar(
-                    style: SkeletonAvatarStyle(
-                        width: 40, height: 40, shape: BoxShape.circle),
+                  Container(
+                    height: 30,
+                    width: 30,
+                    decoration: const BoxDecoration(
+                      color: Colors.grey,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      SkeletonAvatar(
-                        style: SkeletonAvatarStyle(
-                            width: 30, height: 30, shape: BoxShape.circle),
-                      ),
-                      SkeletonAvatar(
-                        style: SkeletonAvatarStyle(
-                            width: 30, height: 30, shape: BoxShape.circle),
-                      ),
-                      SkeletonAvatar(
-                        style: SkeletonAvatarStyle(
-                            width: 30, height: 30, shape: BoxShape.circle),
-                      ),
+                      for (int i = 0; i < 3; i++)
+                        Container(
+                          height: 30,
+                          width: 30,
+                          decoration: const BoxDecoration(
+                            color: Colors.grey,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
                     ],
                   )
                 ],
@@ -54,26 +54,16 @@ class SkeletonSurah extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        SkeletonParagraph(
-                          style: const SkeletonParagraphStyle(
-                            lines: 1,
-                            spacing: 6,
-                            lineStyle: SkeletonLineStyle(
-                              height: 10,
-                              width: double.infinity,
-                            ),
-                          ),
+                        Container(
+                          height: 10,
+                          width: 100,
+                          color: Colors.grey,
                         ),
                         const SizedBox(height: 8),
-                        SkeletonParagraph(
-                          style: const SkeletonParagraphStyle(
-                            lines: 2,
-                            spacing: 6,
-                            lineStyle: SkeletonLineStyle(
-                              height: 10,
-                              width: double.infinity,
-                            ),
-                          ),
+                        Container(
+                          height: 10,
+                          width: 200,
+                          color: Colors.grey,
                         ),
                       ],
                     ),

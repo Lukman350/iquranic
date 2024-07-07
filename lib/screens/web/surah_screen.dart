@@ -12,6 +12,7 @@ import 'package:iquranic/components/skeleton_surah.dart';
 import 'package:iquranic/models/ayat.dart';
 import 'package:iquranic/models/surah.dart';
 import 'package:iquranic/screens/surah_screen.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class QuranScreenDesktop extends StatefulWidget {
   final Future<AyatList> futureAyat;
@@ -58,11 +59,11 @@ class _QuranScreenDesktopState extends State<QuranScreenDesktop> {
                 });
               },
               textStyle:
-                  TextStyle(color: Theme.of(context).colorScheme.onBackground),
+                  TextStyle(color: Theme.of(context).colorScheme.onSurface),
               menuStyle: MenuStyle(
-                backgroundColor: MaterialStateProperty.all(
+                backgroundColor: WidgetStateProperty.all(
                     Theme.of(context).colorScheme.inversePrimary),
-                elevation: MaterialStateProperty.all(4.0),
+                elevation: WidgetStateProperty.all(4.0),
               ),
               inputDecorationTheme: InputDecorationTheme(
                 contentPadding: EdgeInsetsGeometry.lerp(
@@ -131,7 +132,7 @@ class _QuranScreenDesktopState extends State<QuranScreenDesktop> {
                                 ElevatedButton(
                                     style: ButtonStyle(
                                       backgroundColor:
-                                          MaterialStateColor.resolveWith(
+                                          WidgetStateColor.resolveWith(
                                               (states) => Theme.of(context)
                                                   .colorScheme
                                                   .primary),
@@ -169,13 +170,11 @@ class _QuranScreenDesktopState extends State<QuranScreenDesktop> {
                                                 actions: <Widget>[
                                                   ElevatedButton(
                                                     style: ButtonStyle(
-                                                      backgroundColor:
-                                                          MaterialStateColor
-                                                              .resolveWith((states) =>
-                                                                  Theme.of(
-                                                                          context)
-                                                                      .colorScheme
-                                                                      .primary),
+                                                      backgroundColor: WidgetStateColor
+                                                          .resolveWith((states) =>
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .primary),
                                                     ),
                                                     onPressed: () {
                                                       Navigator.pop(context);
@@ -321,7 +320,9 @@ class _QuranScreenDesktopState extends State<QuranScreenDesktop> {
                                           }));
                                 }
 
-                                return const SkeletonSurah();
+                                return const Skeletonizer(
+                                  child: SkeletonSurah(),
+                                );
                               },
                             )),
                       ],

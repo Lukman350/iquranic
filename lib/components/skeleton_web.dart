@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:skeletons/skeletons.dart';
 
 class SkeletonCardWeb extends StatelessWidget {
   final int gridCount;
@@ -13,70 +12,62 @@ class SkeletonCardWeb extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
-        childAspectRatio: gridAspectRatio,
-        crossAxisCount: gridCount,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        children: List.generate(kIsWeb ? 28 : 6, (index) {
-          return Card(
-              child: Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                const Expanded(
-                  flex: 1,
-                  child: SkeletonAvatar(
-                    style: SkeletonAvatarStyle(
-                        width: 40, height: 40, shape: BoxShape.circle),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        SkeletonParagraph(
-                          style: const SkeletonParagraphStyle(
-                            lines: 1,
-                            lineStyle: SkeletonLineStyle(
-                              height: 10,
-                              width: 150,
-                            ),
-                          ),
-                        ),
-                        SkeletonParagraph(
-                          style: const SkeletonParagraphStyle(
-                            lines: 1,
-                            lineStyle: SkeletonLineStyle(
-                              height: 10,
-                              width: 100,
-                            ),
-                          ),
-                        )
-                      ],
+      childAspectRatio: gridAspectRatio,
+      crossAxisCount: gridCount,
+      crossAxisSpacing: 16,
+      mainAxisSpacing: 16,
+      children: List.generate(
+        kIsWeb ? 28 : 6,
+        (index) {
+          return const Card(
+            child: Padding(
+              padding: EdgeInsets.all(6.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    flex: 1,
+                    child: SizedBox(
+                      height: 100,
+                      width: 100,
                     ),
                   ),
-                ),
-                Expanded(
+                  Expanded(
+                    flex: 3,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 10,
+                            width: 100,
+                          ),
+                          SizedBox(height: 4),
+                          SizedBox(
+                            height: 10,
+                            width: 200,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
                     flex: 1,
                     child: Center(
-                        child: SkeletonParagraph(
-                      style: const SkeletonParagraphStyle(
-                        lines: 1,
-                        spacing: 6,
-                        lineStyle: SkeletonLineStyle(
-                          height: 15,
-                          width: 100,
-                        ),
+                      child: SizedBox(
+                        height: 30,
+                        width: 30,
                       ),
-                    )))
-              ],
+                    ),
+                  )
+                ],
+              ),
             ),
-          ));
-        }));
+          );
+        },
+      ),
+    );
   }
 }

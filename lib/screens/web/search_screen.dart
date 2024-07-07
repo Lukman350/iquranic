@@ -9,6 +9,7 @@ import 'package:iquranic/components/leading_menu.dart';
 import 'package:iquranic/components/skeleton_web.dart';
 import 'package:iquranic/components/surah_card_web.dart';
 import 'package:iquranic/models/surah.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class SearchScreenDesktop extends StatefulWidget {
   const SearchScreenDesktop({Key? key}) : super(key: key);
@@ -37,7 +38,7 @@ class _SearchScreenDesktopState extends State<SearchScreenDesktop> {
                 child: SearchBar(
                   hintText: 'Cari surah...',
                   backgroundColor:
-                      MaterialStateColor.resolveWith((states) => Colors.white),
+                      WidgetStateColor.resolveWith((states) => Colors.white),
                   leading: Icon(Icons.search,
                       color: Theme.of(context).colorScheme.inversePrimary),
                   onChanged: (value) {
@@ -95,7 +96,8 @@ class _SearchScreenDesktopState extends State<SearchScreenDesktop> {
                             }));
                   }
 
-                  return SkeletonCardWeb(
+                  return Skeletonizer(
+                    child: SkeletonCardWeb(
                       gridCount:
                           kIsWeb && (screenWidth < 1200 && screenWidth >= 800)
                               ? 3
@@ -103,7 +105,9 @@ class _SearchScreenDesktopState extends State<SearchScreenDesktop> {
                       gridAspectRatio:
                           kIsWeb && (screenWidth < 1200 && screenWidth >= 800)
                               ? 3
-                              : (kIsWeb && screenWidth >= 1200 ? 3 : 3));
+                              : (kIsWeb && screenWidth >= 1200 ? 3 : 3),
+                    ),
+                  );
                 },
               ),
             )
@@ -140,9 +144,11 @@ class _SearchScreenDesktopState extends State<SearchScreenDesktop> {
                             }));
                   }
 
-                  return const SkeletonCardWeb(
-                      gridCount: kIsWeb ? 4 : 2,
-                      gridAspectRatio: kIsWeb ? 3 : 5);
+                  return const Skeletonizer(
+                    child: SkeletonCardWeb(
+                        gridCount: kIsWeb ? 4 : 2,
+                        gridAspectRatio: kIsWeb ? 3 : 5),
+                  );
                 },
               ),
             )
@@ -165,8 +171,8 @@ class _SearchScreenDesktopState extends State<SearchScreenDesktop> {
                     constraints:
                         const BoxConstraints(maxWidth: 300, minHeight: 40),
                     hintText: 'Cari surah...',
-                    backgroundColor: MaterialStateColor.resolveWith(
-                        (states) => Colors.white),
+                    backgroundColor:
+                        WidgetStateColor.resolveWith((states) => Colors.white),
                     leading: Icon(Icons.search,
                         color: Theme.of(context).colorScheme.inversePrimary),
                     onChanged: (value) {

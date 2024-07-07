@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:iquranic/components/appbar_title.dart';
 import 'package:iquranic/components/bottom_nav.dart';
-import 'package:iquranic/components/skeleton_card_mobile.dart';
 import 'package:iquranic/components/surah_card.dart';
 import 'package:iquranic/models/surah.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class FavoriteScreenMobile extends StatelessWidget {
   final Future<List<Surah>> favorite;
@@ -48,25 +48,49 @@ class FavoriteScreenMobile extends StatelessWidget {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return snapshot.data!.isNotEmpty
-                              // ? SurahCard(surah: snapshot.data!)
-                              ? Container()
+                              ? ListView.builder(
+                                  itemCount: snapshot.data!.length,
+                                  itemBuilder: (context, index) {
+                                    return SurahCard(
+                                        surah: snapshot.data![index]);
+                                  },
+                                )
                               : const Center(
                                   child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.favorite_border,
-                                      size: 90,
-                                      color: Colors.grey,
-                                    ),
-                                    Text('Tidak ada surat favorite',
-                                        style: TextStyle(fontSize: 16)),
-                                  ],
-                                ));
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Icon(
+                                        Icons.favorite_border,
+                                        size: 90,
+                                        color: Colors.grey,
+                                      ),
+                                      Text('Tidak ada surat favorite',
+                                          style: TextStyle(fontSize: 16)),
+                                    ],
+                                  ),
+                                );
                         } else if (snapshot.hasError) {
                           return Text('Error: ${snapshot.error}');
                         } else {
-                          return const SkeletonCardMobile();
+                          return Skeletonizer(
+                            child: ListView.builder(
+                              itemCount: 10,
+                              itemBuilder: (context, index) {
+                                return SurahCard(
+                                  surah: Surah(
+                                    nomor: 0,
+                                    nama: 'Loading...',
+                                    namaLatin: 'Loading...',
+                                    arti: 'Loading...',
+                                    jumlahAyat: 0,
+                                    audioFull: {},
+                                    deskripsi: 'Loading...',
+                                    tempatTurun: 'Loading...',
+                                  ),
+                                );
+                              },
+                            ),
+                          );
                         }
                       },
                     ),

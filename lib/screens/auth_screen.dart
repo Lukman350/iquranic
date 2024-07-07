@@ -249,6 +249,10 @@ class AuthScreen extends StatelessWidget {
                       const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () async {
+                          if (authBloc.state.authFormKey.currentState == null) {
+                            return;
+                          }
+
                           if (authBloc.state.authFormKey.currentState!
                               .validate()) {
                             await authBloc.signIn(

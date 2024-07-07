@@ -4,9 +4,9 @@ import 'package:iquranic/api/api.dart';
 import 'package:iquranic/components/alert_error.dart';
 import 'package:iquranic/components/appbar_title.dart';
 import 'package:iquranic/components/bottom_nav.dart';
-import 'package:iquranic/components/skeleton_card_mobile.dart';
 import 'package:iquranic/components/surah_card.dart';
 import 'package:iquranic/models/surah.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class SearchScreenMobile extends StatefulWidget {
   const SearchScreenMobile({Key? key}) : super(key: key);
@@ -49,7 +49,7 @@ class _SearchScreenMobileState extends State<SearchScreenMobile> {
                     flex: 1,
                     child: SearchBar(
                       hintText: 'Cari surah...',
-                      backgroundColor: MaterialStateColor.resolveWith(
+                      backgroundColor: WidgetStateColor.resolveWith(
                           (states) => Colors.white),
                       leading: Icon(Icons.search,
                           color: Theme.of(context).colorScheme.inversePrimary),
@@ -100,7 +100,25 @@ class _SearchScreenMobileState extends State<SearchScreenMobile> {
                                   }));
                         }
 
-                        return const SkeletonCardMobile();
+                        return Skeletonizer(
+                          child: ListView.builder(
+                            itemCount: 10,
+                            itemBuilder: (context, index) {
+                              return SurahCard(
+                                surah: Surah(
+                                  nomor: 0,
+                                  nama: 'Loading...',
+                                  namaLatin: 'Loading...',
+                                  arti: 'Loading...',
+                                  jumlahAyat: 0,
+                                  audioFull: {},
+                                  deskripsi: 'Loading...',
+                                  tempatTurun: 'Loading...',
+                                ),
+                              );
+                            },
+                          ),
+                        );
                       },
                     ),
                   )

@@ -8,6 +8,7 @@ import 'package:iquranic/components/drawer_web.dart';
 import 'package:iquranic/components/skeleton_web.dart';
 import 'package:iquranic/components/surah_card_web.dart';
 import 'package:iquranic/models/surah.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class MainScreenDesktop extends StatelessWidget {
   final Future<SurahList> surahList;
@@ -68,7 +69,7 @@ class MainScreenDesktop extends StatelessWidget {
                                     style: TextStyle(
                                       color: Theme.of(context)
                                           .colorScheme
-                                          .onBackground,
+                                          .onSurface,
                                       fontSize: 15,
                                     ),
                                     textAlign: TextAlign.center,
@@ -79,9 +80,8 @@ class MainScreenDesktop extends StatelessWidget {
                             Text(
                               '${now.hour >= 10 ? '${now.hour}' : '0${now.hour}'}:${now.minute >= 10 ? '${now.minute}' : '0${now.minute}'}',
                               style: TextStyle(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 36),
                             ),
@@ -89,9 +89,8 @@ class MainScreenDesktop extends StatelessWidget {
                             Text(
                               todayHijri.toFormat("MMMM dd, yyyyH"),
                               style: TextStyle(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                   fontSize: 15),
                             ),
                           ],
@@ -143,15 +142,17 @@ class MainScreenDesktop extends StatelessWidget {
                                     }));
                           }
 
-                          return SkeletonCardWeb(
-                              gridCount: kIsWeb &&
-                                      (screenWidth < 1200 && screenWidth >= 800)
-                                  ? 3
-                                  : (kIsWeb && screenWidth >= 1200 ? 4 : 2),
-                              gridAspectRatio: kIsWeb &&
-                                      (screenWidth < 1200 && screenWidth >= 800)
-                                  ? 3
-                                  : (kIsWeb && screenWidth >= 1200 ? 3 : 5));
+                          return Skeletonizer(
+                              child: SkeletonCardWeb(
+                            gridCount: kIsWeb &&
+                                    (screenWidth < 1200 && screenWidth >= 800)
+                                ? 3
+                                : (kIsWeb && screenWidth >= 1200 ? 4 : 2),
+                            gridAspectRatio: kIsWeb &&
+                                    (screenWidth < 1200 && screenWidth >= 800)
+                                ? 3
+                                : (kIsWeb && screenWidth >= 1200 ? 3 : 5),
+                          ));
                         },
                       ),
                     ),
