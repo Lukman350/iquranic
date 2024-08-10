@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iquranic/themes/app_colors.dart';
 
 class GetStartedScreen extends StatelessWidget {
-  const GetStartedScreen({Key? key}) : super(key: key);
-
-  static const routeName = '/get-started';
+  const GetStartedScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +24,13 @@ class GetStartedScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  'Learn Quran every day and recite once everyday',
+                  'Learn Quran every day and\nrecite once everyday',
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
                     color: AppColors.secondary,
                   ),
+                  textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 20),
               ],

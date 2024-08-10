@@ -30,53 +30,115 @@ class MainScreenMobile extends StatelessWidget {
             // greeting
             Padding(
               padding: const EdgeInsets.all(20),
-              child: Row(
+              child: Column(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  BlocBuilder<UserBloc, User?>(
+                    builder: (context, state) {
+                      return state?.displayName == null
+                          ? Container(
+                              height: 50,
+                              width: double.infinity,
+                              margin: const EdgeInsets.only(bottom: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.red[900],
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 5,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Row(
+                                      children: [
+                                        Icon(
+                                          Icons.warning_rounded,
+                                          size: 18,
+                                          color: AppColors.secondaryLight,
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text(
+                                          'Silahkan lengkapi profil Anda',
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.secondaryLight,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        //   TODO: navigate to profile screen to complete profile
+                                      },
+                                      child: const Text(
+                                        'Lengkapi',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.secondaryLight,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          : const SizedBox();
+                    }
+                  ),
+                  Row(
                     children: [
-                      const Text(
-                        'Assalamu\'alaikum,',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.secondary,
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Assalamu\'alaikum,',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.secondary,
+                            ),
+                          ),
+                          BlocBuilder<UserBloc, User?>(
+                            bloc: userCubit,
+                            builder: (context, state) {
+                              return Text(
+                                state?.displayName ?? 'User',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.primary,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
-                      BlocBuilder<UserBloc, User?>(
-                        bloc: userCubit,
-                        builder: (context, state) {
-                          return Text(
-                            state?.displayName ?? 'User',
+                      const Spacer(),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '${now.hour >= 10 ? '${now.hour}' : '0${now.hour}'}:${now.minute >= 10 ? '${now.minute}' : '0${now.minute}'} ${now.hour >= 12 ? 'PM' : 'AM'}',
                             style: const TextStyle(
-                              fontSize: 18,
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.secondary,
+                            ),
+                          ),
+                          Text(
+                            todayHijri.toFormat('MMMM dd, yyyyH'),
+                            style: const TextStyle(
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: AppColors.primary,
                             ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        '${now.hour >= 10 ? '${now.hour}' : '0${now.hour}'}:${now.minute >= 10 ? '${now.minute}' : '0${now.minute}'} ${now.hour >= 12 ? 'PM' : 'AM'}',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.secondary,
-                        ),
-                      ),
-                      Text(
-                        todayHijri.toFormat('MMMM dd, yyyyH'),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
-                        ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

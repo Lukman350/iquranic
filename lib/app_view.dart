@@ -13,11 +13,12 @@ class AppView extends StatelessWidget {
 
     return BlocBuilder<ThemeBloc, ThemeData>(builder: (_, theme) {
       return MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'iQuranic',
         theme: theme,
-        onGenerateInitialRoutes: (initialRoute) => AppRoutes()
+        onGenerateInitialRoutes: (initialRoute) => AppRoutes
             .generateInitialRoutes(initialRoute, userCubit.isSignedIn),
-        onGenerateRoute: AppRoutes().generateRoute,
+        onGenerateRoute: AppRoutes.generateRoute,
       );
     });
   }

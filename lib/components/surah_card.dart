@@ -17,7 +17,9 @@ class SurahCard extends StatelessWidget {
         Material(
           color: Theme.of(context).scaffoldBackgroundColor,
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+            //   TODO: Navigate to SurahScreen
+            },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
               child: Row(

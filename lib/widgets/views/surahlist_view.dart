@@ -23,26 +23,29 @@ class SurahListView extends StatelessWidget {
           return Center(
             child: Text('Error: ${snapshot.error}'),
           );
-        } else {
-          return SizedBox(
-            height: 350,
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final surah = snapshot.data!;
-
-                if (surah.isEmpty) {
-                  return const Center(
-                    child: Text('No Surah'),
-                  );
-                }
-
-                return SurahCard(surah: surah[index]);
-              },
-            ),
-          );
         }
+
+        return SizedBox(
+          height: 350,
+          width: double.infinity,
+          child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemExtent: 100,
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              final surah = snapshot.data!;
+
+              if (surah.isEmpty) {
+                return const Center(
+                  child: Text('No Surah'),
+                );
+              }
+
+              return SurahCard(surah: surah[index]);
+            },
+          ),
+        );
       },
     );
   }

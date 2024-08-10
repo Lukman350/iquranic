@@ -9,12 +9,12 @@ import '../screens/surah_screen.dart';
 import '../screens/not_found_screen.dart';
 
 class AppRoutes {
-  Route generateRoute(RouteSettings settings) {
+  static Route generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (context) => const MainScreen());
       case '/auth':
-        return MaterialPageRoute(builder: (context) => const AuthScreen());
+        return MaterialPageRoute(builder: (context) => AuthScreen());
       case '/surah':
         return MaterialPageRoute(builder: (context) => const QuranScreen());
       // case '/search':
@@ -29,7 +29,7 @@ class AppRoutes {
     }
   }
 
-  List<Route> generateInitialRoutes(String initialRouteName, bool isAuth) {
+  static List<Route> generateInitialRoutes(String initialRouteName, bool isAuth) {
     if (isAuth) {
       return [
         MaterialPageRoute(builder: (context) => const MainScreen()),

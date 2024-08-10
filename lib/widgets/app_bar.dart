@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../bloc/auth_bloc.dart';
+import '../bloc/events/auth_event.dart';
 import '../bloc/user_bloc.dart';
 import '../themes/app_colors.dart';
 import 'app_snackbar.dart';
@@ -79,7 +81,7 @@ class MyAppBar extends StatelessWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(50),
                 onTap: () {
-                  FirebaseAuth.instance.signOut();
+                  context.read<AuthBloc>().add(AuthLogout());
 
                   AppSnackBar.show(
                     context: context,
@@ -87,8 +89,6 @@ class MyAppBar extends StatelessWidget {
                     backgroundColor: AppColors.secondaryLight,
                     textColor: AppColors.primary,
                   );
-
-                  userCubit.user = null;
 
                   Navigator.of(context).pushReplacementNamed('/auth');
                 },
@@ -101,11 +101,13 @@ class MyAppBar extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: AppColors.secondaryLight,
                         borderRadius: BorderRadius.circular(50),
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            state?.photoURL ?? 'https://via.placeholder.com/35',
-                          ),
-                        ),
+                        image: state?.photoURL == null
+                            ? const DecorationImage(
+                                image: AssetImage('assets/images/profile_default.png')
+                              )
+                            : DecorationImage(
+                                image: NetworkImage(state?.photoURL as String)
+                              ),
                       ),
                     );
                   },

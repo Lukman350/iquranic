@@ -13,6 +13,7 @@ class AppSnackBar {
           Text(message, style: TextStyle(color: textColor ?? Colors.white)),
       backgroundColor: backgroundColor ?? Colors.red[700]!,
       duration: duration ?? const Duration(seconds: 3),
+
     );
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
